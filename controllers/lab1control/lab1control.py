@@ -22,26 +22,26 @@ for i in range(8):
 ls = []
 lsNames = ['ls0', 'ls1', 'ls2', 'ls3', 'ls4', 'ls5', 'ls6', 'ls7']
 
-
 for i in range(len(lsNames)):
     ls.append(robot.getDevice(lsNames[i]))
     ls[i].enable(TIME_STEP)
+
 
 leftMotor = robot.getDevice('left wheel motor')
 rightMotor = robot.getDevice('right wheel motor')
 leftMotor.setPosition(float('inf'))
 rightMotor.setPosition(float('inf'))
-leftMotor.setVelocity(2.0)
-rightMotor.setVelocity(2.0)
-
-vL = 0
-vR = 0
+leftMotor.setVelocity(2)
+rightMotor.setVelocity(2)
 
 
 
 # feedback loop: step simulation until receiving an exit event
 while robot.step(TIME_STEP) != -1:
     # read sensors outputs
+    #leftSpeed=0
+    #rightSpeed=0
+
     psValues = []
     for i in range(8):
         psValues.append(ps[i].getValue())
@@ -50,7 +50,51 @@ while robot.step(TIME_STEP) != -1:
     for i in range(8):
         lsValues.append(ls[i].getValue())
 
+    print("PS VALUE PRINTOUT:")
+    print(psValues)
+
+
+
+    rightsen=80
+    leftsen=80
+
+    right_obstacle = psValues[0] > rightsen or psValues[1] > rightsen or psValues[2] > rightsen
+    left_obstacle = psValues[5] > leftsen or psValues[6] > leftsen or psValues[7] > leftsen
+
+
+    if left_obstacle:
+        print("LEFT OBSTACLE DETECTED!")
+        # turn right
+        leftSpeed  = 0.5 * MAX_SPEED
+        rightSpeed = -0.5 * MAX_SPEED
+
+    elif right_obstacle:
+        print("RIGHT OBSTACLE DETECTED!")
+        # turn left
+        leftSpeed  = -0.5 * MAX_SPEED
+        rightSpeed = 0.5 * MAX_SPEED
+    
+
+    if(not left_obstacle or right_obstacle):
+        leftMotor.setVelocity(0.1 * MAX_SPEED)
+        rightMotor.setVelocity(0.1 * MAX_SPEED)
+
+   
+
+
+
     # write actuators inputs
-    leftMotor.setVelocity(vL)
-    rightMotor.setVelocity(vR)
+
+
+    leftMotor.setVelocity(leftSpeed)
+    rightMotor.setVelocity(rightSpeed)
+
+
+
+
+
+    
+
+    #leftMotor.setPosition(float('inf'))
+    #rightMotor.setPosition(float('inf'))
 
