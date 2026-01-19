@@ -52,34 +52,60 @@ while robot.step(TIME_STEP) != -1:
 
     print("PS VALUE PRINTOUT:")
     print(psValues)
+    print("\n")
 
 
 
     rightsen=80
     leftsen=80
 
+    forwardsen=100
+    fcolsen=200
+
+
+
     right_obstacle = psValues[0] > rightsen or psValues[1] > rightsen or psValues[2] > rightsen
     left_obstacle = psValues[5] > leftsen or psValues[6] > leftsen or psValues[7] > leftsen
 
+    #forwards = psValues[0] < forwardsen and psValues[1] < forwardsen and psValues[2] < forwardsen
+    forwards= psValues[5] > forwardsen
+    fcol=psValues[0] >fcolsen and psValues[7] >fcolsen 
 
+
+    """
     if left_obstacle:
-        print("LEFT OBSTACLE DETECTED!")
+        print("!!!!!!!!!!!!!!!!!!!LEFT OBSTACLE DETECTED!")
         # turn right
         leftSpeed  = 0.5 * MAX_SPEED
         rightSpeed = -0.5 * MAX_SPEED
 
     elif right_obstacle:
-        print("RIGHT OBSTACLE DETECTED!")
+        print("!!!!!!!!!!!!!!!!!!!RIGHT OBSTACLE DETECTED!")
         # turn left
         leftSpeed  = -0.5 * MAX_SPEED
         rightSpeed = 0.5 * MAX_SPEED
-    
-
-    if(not left_obstacle or right_obstacle):
-        leftMotor.setVelocity(0.1 * MAX_SPEED)
-        rightMotor.setVelocity(0.1 * MAX_SPEED)
+    """
 
    
+    if(forwards):
+        print("!!!!!!!!!!!!!!!!!!!!MOVING FORWARD!")
+        leftSpeed  = 0.5 * MAX_SPEED
+        rightSpeed = 0.5 * MAX_SPEED
+  
+    if(fcol):
+        print("!!!!!!!!!!!!!!!!!!!!FRONT COLLISION!")
+        leftSpeed  = 0.5 * MAX_SPEED
+        rightSpeed = -0.5 * MAX_SPEED
+  
+
+
+   
+    """
+    if(forwardsnf):
+        print("!!!!!!!!!!!!!!!!!!!!OVERSHOOT")
+        leftSpeed  = -0.5 * MAX_SPEED
+        rightSpeed = 0.5 * MAX_SPEED
+    """
 
 
 
