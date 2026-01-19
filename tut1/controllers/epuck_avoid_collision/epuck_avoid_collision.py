@@ -73,7 +73,7 @@ while robot.step(timestep) != -1:
 
 
 
-
+    
     # Process sensor data here.
 
     MAX_SPEED = 6.28
@@ -83,10 +83,12 @@ while robot.step(timestep) != -1:
     rightSpeed = 0.5 * MAX_SPEED
     # modify speeds according to obstacles
     if left_obstacle:
+        print("LEFT OBSTACLE DETECTED!")
         # turn right
         leftSpeed  = 0.5 * MAX_SPEED
         rightSpeed = -0.5 * MAX_SPEED
     elif right_obstacle:
+        print("RIGHT OBSTACLE DETECTED!")
         # turn left
         leftSpeed  = -0.5 * MAX_SPEED
         rightSpeed = 0.5 * MAX_SPEED
