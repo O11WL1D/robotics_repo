@@ -1,0 +1,44 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/factory/containers/protos/WoodenBox.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.42690030698101383 0.4660919632407968 -0.774928648135979 1.7371686056340676
+  position -0.20723061147777505 1.5679704983768639 2.49095072546706
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+WoodenBox {
+  translation -0.05645080000000005 -0.935537 0.2996069497379375
+  rotation 0.12537301843640486 0.1891789296049345 0.9739060215655699 2.115840324540483e-16
+  name "wooden box(1)"
+  mass 1
+}
+RectangleArena {
+  translation -0.107029 -0.0159599 4.44089e-16
+  floorSize 5 5
+  floorTileSize 0.25 0.25
+}
+E-puck {
+  hidden position_0_0 1.9644202194037812
+  hidden position_0_1 2.1587946556882533
+  hidden linearVelocity_0 0.05586779468645412 0.003592154402279695 0.000285465767508358
+  hidden angularVelocity_0 0.0003335713757871782 -0.004335481352129132 0.09357700529498435
+  hidden rotation_1 0 1 0 1.9644202194037812
+  hidden linearVelocity_1 0.053418739499136524 0.0034344652423515362 0.00028571415152975425
+  hidden angularVelocity_1 -0.17103297634600417 2.6593733528398027 0.09527524493138928
+  hidden rotation_2 0 1 0 2.1587946556882533
+  hidden linearVelocity_2 0.05827361775064546 0.0037466534623120354 0.00028568013488708454
+  hidden angularVelocity_2 -0.18801489907516478 2.9251202870236 0.09555263349251097
+  translation -0.24057222690225377 0.0012899577343553363 -0.00010085245482425488
+  rotation 0.0015381642619836287 0.0019868416304147673 0.999996843250537 0.06597797612020706
+  name "e-puck(1)"
+}
