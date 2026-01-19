@@ -1,0 +1,81 @@
+
+                  while(True):
+                        print("------------------NEW TRACEBACK CYCLE!")
+                        print("CURRENT COORDS")
+                        grid[currentnode.self[1]][currentnode.self[0]]=3
+                        for x in grid:
+                              print(x)
+                        
+                        print(currentnode.self)
+                        currentnode=currentnode.parent
+                        
+
+
+                            
+    grid = [[0, 0, 0, 1],
+            [1, 0, 0, 0],
+            [1, 0, 1, 0],
+            [1, 1, 0, 0]]
+    start, goal = (3, 2), (2, 1)
+    #print(shortest_path_grid(grid, start, goal))
+    assert shortest_path_grid(grid, start, goal) == 9
+
+
+
+    grid = [[0, 0, 0, 0],
+            [0, 1, 1, 0],
+            [1, 1, 0, 0],
+            [1, 0, 0, 1]]
+    start, goal = (3, 1), (1, 0)
+    #print(shortest_path_grid(grid, start, goal))
+    assert shortest_path_grid(grid, start, goal) == 10
+
+
+    grid = [[0, 0, 0, 0],
+            [1, 0, 1, 0],
+            [1, 0, 1, 0],
+            [1, 0, 1, 0]]
+    
+    start, goal = (3, 3), (0, 0)
+    #print(shortest_path_grid(grid, start, goal))
+    assert shortest_path_grid(grid, start, goal) == 7
+    
+    grid = [[0, 0, 0, 1],
+            [1, 0, 0, 0],
+            [1, 0, 1, 0],
+            [1, 1, 0, 0]]
+    start, goal = (3, 2), (0, 0)
+    #print(shortest_path_grid(grid, start, goal))
+    assert shortest_path_grid(grid, start, goal) == 8
+
+
+
+
+
+
+ 
+
+
+    grid = [[0, 1],
+            [1, 0]]
+    start, goal = (0, 0), (1, 1)
+    #print(shortest_path_grid(grid, start, goal))
+    assert shortest_path_grid(grid, start, goal) == -1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
