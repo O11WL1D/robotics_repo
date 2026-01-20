@@ -98,6 +98,7 @@ while robot.step(TIME_STEP) != -1:
     ldiagsen=60
     bdiagsen=70
 
+    cornersen=80
 
     targetdist=230
 
@@ -112,11 +113,14 @@ while robot.step(TIME_STEP) != -1:
     frontsensoractive=psValues[0] >frontsen and psValues[7] >frontsen 
     fdiagsensoractive=psValues[6] >frontsen
     bdiagsensoractive=psValues[4] >bdiagsen
+
+    leftcorner=psValues[5] >cornersen or psValues[6] >cornersen
   
     rotationdif=psValues[6]-psValues[4]
 
     targetmet=psValues[5] > targetdist
     
+
 
 
  
@@ -163,15 +167,29 @@ while robot.step(TIME_STEP) != -1:
         #    robotstate=STATES.STABLIZE
         
 
-        if(stabilizecounter==20):
+        if(stabilizecounter==19):
             robotstate=STATES.STABLIZE
             
     
         if(leftsensoractive):
+           print("LEFT SENSOR ACTIVE")
            
            leftSpeed  = 0.5 * MAX_SPEED
            rightSpeed = 0.5 * MAX_SPEED
-           
+        
+        else:
+
+                    leftSpeed  = -0.5 * MAX_SPEED
+                    rightSpeed = 0.5 * MAX_SPEED
+                    if(leftcorner):
+                        leftSpeed  = 0.5 * MAX_SPEED
+                        rightSpeed = 0.5 * MAX_SPEED
+
+
+
+
+
+
 
 
         if(fdiagsensoractive):
@@ -190,22 +208,10 @@ while robot.step(TIME_STEP) != -1:
 
 
 
-    if(robotstate==STATES.FORWARD):
-        leftSpeed  = 0.5 * MAX_SPEED
-        rightSpeed = 0.5 * MAX_SPEED
-
-
-    if((robotstate==STATES.FCOLLIDE) or (robotstate==STATES.RROTATE)):
-        leftSpeed  = 0.5 * MAX_SPEED
-        rightSpeed = -0.5 * MAX_SPEED
-
-
-    if( (robotstate==STATES.LROTATE)):
-        leftSpeed  = -0.5 * MAX_SPEED
-        rightSpeed = 0.5 * MAX_SPEED
 
 
 
+ 
 
 
 
