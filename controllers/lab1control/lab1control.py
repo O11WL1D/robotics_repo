@@ -83,9 +83,9 @@ while robot.step(TIME_STEP) != -1:
     #print(psValues)
     #print("\n")
 
-    print("LS VALUE PRINTOUT:")
-    print(lsValues)
-    print("\n")
+    #print("LS VALUE PRINTOUT:")
+    #print(lsValues)
+    #print("\n")
 
 
   
@@ -128,8 +128,14 @@ while robot.step(TIME_STEP) != -1:
     rightcorner=psValues[1] >rcornersen or psValues[2] >rcornersen
   
     #light detection
-    lightsen=2700
+    lightsen=4000
+    lowlightsen=2000
     lightdetected=lsValues[0] > lightsen and lsValues[1] > lightsen  and lsValues[2] > lightsen  and lsValues[5] > lightsen  and lsValues[6] > lightsen  and lsValues[7] > lightsen 
+    lowlightdetected=lsValues[0] > lowlightsen and lsValues[1] > lowlightsen  and lsValues[2] > lowlightsen  and lsValues[5] > lowlightsen  and lsValues[6] > lowlightsen  and lsValues[7] > lowlightsen 
+
+    if(lowlightdetected):
+        print("\n\n\n !!!!!!!!!!!!!!!!!!!!!!!!!!! LOW LIGHT DETETED!")
+        #breakpoint()
 
 
  
