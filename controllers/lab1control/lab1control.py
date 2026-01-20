@@ -57,7 +57,7 @@ rightMotor.setVelocity(2)
 leftSpeed=0
 rightSpeed=0
 
-robotstate=STATES.RSTABLIZE
+robotstate=STATES.STABLIZE
 
 
 prevhighest=0
@@ -95,7 +95,7 @@ while robot.step(TIME_STEP) != -1:
     bdiagsen=70
 
     cornersen=80
-    rcornersen=70
+    rcornersen=80
 
     targetdist=230
 
@@ -122,9 +122,11 @@ while robot.step(TIME_STEP) != -1:
     Rleftsensoractive= psValues[2] > leftsen and psValues[1] > ldiagsen and psValues[3] > ldiagsen
     Rfrontsensoractive=psValues[0] >frontsen and psValues[7] >frontsen 
     Rfdiagsensoractive=psValues[1] >frontsen
-    rightcorner=psValues[2] >rcornersen or psValues[3] >rcornersen
+    rightcorner=psValues[1] >rcornersen or psValues[2] >rcornersen
   
-
+    #light detection
+    lightsen=200
+    lightdetected=lsValues[0] > lightsen and lsValues[1] > lightsen  and lsValues[2] > lightsen  and lsValues[5] > lightsen  and lsValues[6] > lightsen  and lsValues[7] > lightsen 
 
 
  
@@ -182,8 +184,8 @@ while robot.step(TIME_STEP) != -1:
 
         if(stablecount==10):
             if(prevhighest-psValues[2] > 10):
-                leftSpeed  = 0.1 * MAX_SPEED
-                rightSpeed = -0.1 * MAX_SPEED
+                leftSpeed  = 0.01 * MAX_SPEED
+                rightSpeed = -0.01 * MAX_SPEED
             else:
                 stablecount=0
                 prevhighest=0
@@ -196,6 +198,11 @@ while robot.step(TIME_STEP) != -1:
 
 
     if(robotstate==STATES.MOVING):
+
+        if(lightdetected):
+            robotstate=STATES.RSTABLIZE
+
+
         print("STANDARD MOVEMENT ENABLED!")
         stabilizecounter+=1
         
@@ -244,6 +251,9 @@ while robot.step(TIME_STEP) != -1:
     if(robotstate==STATES.REVERSE):
         print("REVERSE ACTIVE!")
 
+        if(lightdetected):
+            robotstate=STATES.STABLIZE
+
 
         stabilizecounter+=1
                 
@@ -264,9 +274,10 @@ while robot.step(TIME_STEP) != -1:
                 rightSpeed = -0.5 * MAX_SPEED
 
                 if(rightcorner):
-                    #leftSpeed  = 0.5 * MAX_SPEED
-                    #rightSpeed = 0.5 * MAX_SPEED
-                    print("")
+                    print("RIGHT CORNER ACTIVE!")
+                    leftSpeed  = 0.5 * MAX_SPEED
+                    rightSpeed = 0.5 * MAX_SPEED
+                   
 
 
 
