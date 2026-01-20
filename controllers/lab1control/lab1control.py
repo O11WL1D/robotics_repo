@@ -2,27 +2,23 @@ from controller import Robot, DistanceSensor, Motor
 from enum import Enum
 
 class STATES(Enum):
-    FORWARD=1
-    LROTATE=2
-    RROTATE=3
-    FCOLLIDE=4
-    sLROTATE=5
-    sRROTATE=6
     STABLIZE=7
     MOVING=8
+    REVERSE=9
+    RSTABLIZE=10
+
 
 class SUBSTATES(Enum):
-    FORWARD=1
-    LROTATE=2
-    RROTATE=3
-    FCOLLIDE=4
+    NEARWALL=1
+    MIDROTATE=2
+
+
 
  
 
 
 
-robotstate=STATES.FORWARD
-subrobotrate=SUBSTATES.FORWARD
+
 
 # time in [ms] of a simulation step
 TIME_STEP = 64
@@ -61,7 +57,7 @@ rightMotor.setVelocity(2)
 leftSpeed=0
 rightSpeed=0
 
-robotstate=STATES.STABLIZE
+robotstate=STATES.RSTABLIZE
 
 
 prevhighest=0
@@ -99,6 +95,7 @@ while robot.step(TIME_STEP) != -1:
     bdiagsen=70
 
     cornersen=80
+    rcornersen=70
 
     targetdist=230
 
@@ -107,19 +104,26 @@ while robot.step(TIME_STEP) != -1:
 
     #forwards = psValues[0] < forwardsen and psValues[1] < forwardsen and psValues[2] < forwardsen
 
+    #targetmet=psValues[5] > targetdist
+    
 
     #if three left sensors are active, then activate leftsensor
+    
+    # LEFTSIDE NEAR WALL MOVEMENT.
     leftsensoractive= psValues[5] > leftsen and psValues[4] > ldiagsen and psValues[6] > ldiagsen
     frontsensoractive=psValues[0] >frontsen and psValues[7] >frontsen 
     fdiagsensoractive=psValues[6] >frontsen
-    bdiagsensoractive=psValues[4] >bdiagsen
-
     leftcorner=psValues[5] >cornersen or psValues[6] >cornersen
   
-    rotationdif=psValues[6]-psValues[4]
-
-    targetmet=psValues[5] > targetdist
     
+
+   
+    # RIGHTSIDE NEAR WALL MOVEMENT.
+    Rleftsensoractive= psValues[2] > leftsen and psValues[1] > ldiagsen and psValues[3] > ldiagsen
+    Rfrontsensoractive=psValues[0] >frontsen and psValues[7] >frontsen 
+    Rfdiagsensoractive=psValues[1] >frontsen
+    rightcorner=psValues[2] >rcornersen or psValues[3] >rcornersen
+  
 
 
 
@@ -156,12 +160,45 @@ while robot.step(TIME_STEP) != -1:
 
 
 
+    if(robotstate==STATES.RSTABLIZE):
+        stablecount+=1
+
+        print(" R STABILIZING!!!!!!")
+       
+        print("PREV HIGHEST!" + str(prevhighest))
+        if(psValues[2]>prevhighest):
+            print("HIGHER VALUE")
+            highestvalue=psValues[2]
+            leftSpeed  = -0.001 * MAX_SPEED
+            rightSpeed = 0.001 * MAX_SPEED
+
+        else:
+             leftSpeed  = 0
+             rightSpeed = 0
+        
+
+        prevhighest=highestvalue
+
+
+        if(stablecount==10):
+            if(prevhighest-psValues[2] > 10):
+                leftSpeed  = 0.1 * MAX_SPEED
+                rightSpeed = -0.1 * MAX_SPEED
+            else:
+                stablecount=0
+                prevhighest=0
+                robotstate=STATES.REVERSE
+
+
+
+
+
 
 
     if(robotstate==STATES.MOVING):
-        
+        print("STANDARD MOVEMENT ENABLED!")
         stabilizecounter+=1
-        print("ROTATION DIF" + str(abs(rotationdif)))
+        
 
         #if(abs(rotationdif)>10):
         #    robotstate=STATES.STABLIZE
@@ -170,6 +207,7 @@ while robot.step(TIME_STEP) != -1:
         if(stabilizecounter==19):
             robotstate=STATES.STABLIZE
             
+
     
         if(leftsensoractive):
            print("LEFT SENSOR ACTIVE")
@@ -203,10 +241,49 @@ while robot.step(TIME_STEP) != -1:
              rightSpeed = -0.5 * MAX_SPEED
 
 
+    if(robotstate==STATES.REVERSE):
+        print("REVERSE ACTIVE!")
+
+
+        stabilizecounter+=1
+                
+
+        if(stabilizecounter==18):
+            robotstate=STATES.RSTABLIZE
+            
+
+    
+        if(Rleftsensoractive):
+            print("LEFT SENSOR ACTIVE")
+            
+            leftSpeed  = 0.5 * MAX_SPEED
+            rightSpeed = 0.5 * MAX_SPEED
+            
+        else:
+                leftSpeed  = 0.5 * MAX_SPEED
+                rightSpeed = -0.5 * MAX_SPEED
+
+                if(rightcorner):
+                    #leftSpeed  = 0.5 * MAX_SPEED
+                    #rightSpeed = 0.5 * MAX_SPEED
+                    print("")
 
 
 
 
+
+
+
+
+        if(Rfdiagsensoractive):
+            leftSpeed  = -0.5 * MAX_SPEED
+            rightSpeed = 0.5 * MAX_SPEED
+
+
+
+        if(Rfrontsensoractive):
+            leftSpeed  = -0.5 * MAX_SPEED
+            rightSpeed = 0.5 * MAX_SPEED
 
 
 
