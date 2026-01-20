@@ -93,7 +93,8 @@ while robot.step(TIME_STEP) != -1:
   
     rotationdif=psValues[6]-psValues[4]
 
-
+    targetmet=psValues[5] > targetdist
+    
 
 
     if(leftsensoractive):
@@ -108,6 +109,7 @@ while robot.step(TIME_STEP) != -1:
             robotstate=STATES.RROTATE
             print("!!!!!!!!!!!!!!!!!!!!FRONT DIAGONAL ACTIVE !")
         else:
+            
             if(rotationdif>10):
              robotstate=STATES.RROTATE
 
