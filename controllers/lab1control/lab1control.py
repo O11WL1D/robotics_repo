@@ -79,10 +79,13 @@ while robot.step(TIME_STEP) != -1:
     for i in range(8):
         lsValues.append(ls[i].getValue())
 
-    print("PS VALUE PRINTOUT:")
-    print(psValues)
-    print("\n")
+    #print("PS VALUE PRINTOUT:")
+    #print(psValues)
+    #print("\n")
 
+    print("LS VALUE PRINTOUT:")
+    print(lsValues)
+    print("\n")
 
 
   
@@ -125,7 +128,7 @@ while robot.step(TIME_STEP) != -1:
     rightcorner=psValues[1] >rcornersen or psValues[2] >rcornersen
   
     #light detection
-    lightsen=200
+    lightsen=2700
     lightdetected=lsValues[0] > lightsen and lsValues[1] > lightsen  and lsValues[2] > lightsen  and lsValues[5] > lightsen  and lsValues[6] > lightsen  and lsValues[7] > lightsen 
 
 
@@ -199,8 +202,7 @@ while robot.step(TIME_STEP) != -1:
 
     if(robotstate==STATES.MOVING):
 
-        if(lightdetected):
-            robotstate=STATES.RSTABLIZE
+       
 
 
         print("STANDARD MOVEMENT ENABLED!")
@@ -211,14 +213,19 @@ while robot.step(TIME_STEP) != -1:
         #    robotstate=STATES.STABLIZE
         
 
-        if(stabilizecounter==19):
-            robotstate=STATES.STABLIZE
+ 
             
 
     
         if(leftsensoractive):
            print("LEFT SENSOR ACTIVE")
-           
+           if(stabilizecounter==19):
+                robotstate=STATES.STABLIZE
+
+           if(lightdetected):
+                robotstate=STATES.RSTABLIZE
+
+            
            leftSpeed  = 0.5 * MAX_SPEED
            rightSpeed = 0.5 * MAX_SPEED
         
@@ -251,19 +258,23 @@ while robot.step(TIME_STEP) != -1:
     if(robotstate==STATES.REVERSE):
         print("REVERSE ACTIVE!")
 
-        if(lightdetected):
-            robotstate=STATES.STABLIZE
+
 
 
         stabilizecounter+=1
                 
 
-        if(stabilizecounter==18):
-            robotstate=STATES.RSTABLIZE
-            
 
     
+
         if(Rleftsensoractive):
+            if(stabilizecounter==19):
+                robotstate=STATES.RSTABLIZE
+            
+
+            if(lightdetected):
+               robotstate=STATES.STABLIZE
+
             print("LEFT SENSOR ACTIVE")
             
             leftSpeed  = 0.5 * MAX_SPEED
