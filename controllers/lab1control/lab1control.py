@@ -6,9 +6,23 @@ class STATES(Enum):
     LROTATE=2
     RROTATE=3
     FCOLLIDE=4
+    sLROTATE=5
+    sRROTATE=6
+    STABLIZE=7
+    MOVING=8
+
+class SUBSTATES(Enum):
+    FORWARD=1
+    LROTATE=2
+    RROTATE=3
+    FCOLLIDE=4
+
+ 
+
 
 
 robotstate=STATES.FORWARD
+subrobotrate=SUBSTATES.FORWARD
 
 # time in [ms] of a simulation step
 TIME_STEP = 64
@@ -47,6 +61,14 @@ rightMotor.setVelocity(2)
 leftSpeed=0
 rightSpeed=0
 
+robotstate=STATES.STABLIZE
+
+
+prevhighest=0
+
+stablecount=0
+
+stabilizecounter=0
 
 # feedback loop: step simulation until receiving an exit event
 while robot.step(TIME_STEP) != -1:
@@ -97,40 +119,70 @@ while robot.step(TIME_STEP) != -1:
     
 
 
-    if(leftsensoractive):
-      
-      
-        robotstate=STATES.FORWARD
-        print("!!!!!!!!!!!!!!!!!!!!MOVING FORWARD!")
+ 
+
+    if(robotstate==STATES.STABLIZE):
+        stablecount+=1
+
+        print("STABILIZING!!!!!!")
        
+        print("PREV HIGHEST!" + str(prevhighest))
+        if(psValues[5]>prevhighest):
+            print("HIGHER VALUE")
+            highestvalue=psValues[5]
+            leftSpeed  = 0.001 * MAX_SPEED
+            rightSpeed = -0.001 * MAX_SPEED
+
+        else:
+             leftSpeed  = 0
+             rightSpeed = 0
+        
+
+        prevhighest=highestvalue
+
+
+        if(stablecount==10):
+            if(prevhighest-psValues[5] > 10):
+                leftSpeed  = -0.1 * MAX_SPEED
+                rightSpeed = 0.1 * MAX_SPEED
+            else:
+                stablecount=0
+                prevhighest=0
+                robotstate=STATES.MOVING
+
+
+
+
+
+    if(robotstate==STATES.MOVING):
+        
+        stabilizecounter+=1
+        print("ROTATION DIF" + str(abs(rotationdif)))
+
+        #if(abs(rotationdif)>10):
+        #    robotstate=STATES.STABLIZE
+        
+
+        if(stabilizecounter==20):
+            robotstate=STATES.STABLIZE
+            
+    
+        if(leftsensoractive):
+           
+           leftSpeed  = 0.5 * MAX_SPEED
+           rightSpeed = 0.5 * MAX_SPEED
+           
 
 
         if(fdiagsensoractive):
-            robotstate=STATES.RROTATE
-            print("!!!!!!!!!!!!!!!!!!!!FRONT DIAGONAL ACTIVE !")
-        else:
-            
-            if(rotationdif>10):
-             robotstate=STATES.RROTATE
-
-
-            if(rotationdif<-5):
-                robotstate=STATES.LROTATE
-
-
-        
+             leftSpeed  = 0.5 * MAX_SPEED
+             rightSpeed = -0.5 * MAX_SPEED
 
 
 
-    if(frontsensoractive):
-        robotstate=STATES.FCOLLIDE
-        print("!!!!!!!!!!!!!!!!!!!!FRONT COLLISION!")
-
-        
-
-
-
-
+        if(frontsensoractive):
+             leftSpeed  = 0.5 * MAX_SPEED
+             rightSpeed = -0.5 * MAX_SPEED
 
 
 
@@ -147,9 +199,13 @@ while robot.step(TIME_STEP) != -1:
         leftSpeed  = 0.5 * MAX_SPEED
         rightSpeed = -0.5 * MAX_SPEED
 
+
     if( (robotstate==STATES.LROTATE)):
         leftSpeed  = -0.5 * MAX_SPEED
         rightSpeed = 0.5 * MAX_SPEED
+
+
+
 
 
 
