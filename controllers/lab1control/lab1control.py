@@ -71,10 +71,13 @@ while robot.step(TIME_STEP) != -1:
 
     leftsen=100
     frontsen=200
+    cfrontsen=210
+
     ldiagsen=60
+    bdiagsen=70
 
 
-
+    targetdist=230
 
     #right_obstacle = psValues[0] > rightsen or psValues[1] > rightsen or psValues[2] > rightsen
     #left_obstacle = psValues[5] > leftsen or psValues[6] > leftsen or psValues[7] > leftsen
@@ -85,24 +88,36 @@ while robot.step(TIME_STEP) != -1:
     #if three left sensors are active, then activate leftsensor
     leftsensoractive= psValues[5] > leftsen and psValues[4] > ldiagsen and psValues[6] > ldiagsen
     frontsensoractive=psValues[0] >frontsen and psValues[7] >frontsen 
-    diagsensoractive=psValues[6] >frontsen
+    fdiagsensoractive=psValues[6] >frontsen
+    bdiagsensoractive=psValues[4] >bdiagsen
+  
+    rotationdif=psValues[6]-psValues[4]
 
-
- 
 
 
 
     if(leftsensoractive):
+      
+      
         robotstate=STATES.FORWARD
         print("!!!!!!!!!!!!!!!!!!!!MOVING FORWARD!")
        
-        if(diagsensoractive):
+
+
+        if(fdiagsensoractive):
             robotstate=STATES.RROTATE
-            print("!!!!!!!!!!!!!!!!!!!!LEFT DIAGONAL ACTIVE !")
+            print("!!!!!!!!!!!!!!!!!!!!FRONT DIAGONAL ACTIVE !")
+        else:
+            if(rotationdif>10):
+             robotstate=STATES.RROTATE
+
+
+            if(rotationdif<-5):
+                robotstate=STATES.LROTATE
+
+
         
-    else:
-        print("!!!!!!!!!!!!!!!!!!!!LEFT COUNTER ROTATION ACTIVE")
-        robotstate=STATES.LROTATE
+
 
 
     if(frontsensoractive):
@@ -110,6 +125,13 @@ while robot.step(TIME_STEP) != -1:
         print("!!!!!!!!!!!!!!!!!!!!FRONT COLLISION!")
 
         
+
+
+
+
+
+
+
 
 
 
