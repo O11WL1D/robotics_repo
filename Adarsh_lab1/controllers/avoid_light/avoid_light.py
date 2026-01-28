@@ -42,7 +42,6 @@ while robot.step(TIME_STEP) != -1:
     lsValues = [s.getValue() for s in ls]
     
   
-    print(f"LS Values: {[int(v) for v in lsValues]}")
  
     target_indices = [0, 1, 2, 5, 6, 7]
     is_seeing_light = all(lsValues[i] < ZERO_THRESHOLD for i in target_indices)
@@ -74,7 +73,6 @@ while robot.step(TIME_STEP) != -1:
 
         # Trigger 180 
         if is_seeing_light:
-            print(">>> PATTERN [0,0,0,X,X,0,0,0] DETECTED - TURNING 180")
             state = 1
             turn_timer = 28
 
@@ -109,7 +107,6 @@ while robot.step(TIME_STEP) != -1:
         if light_cooldown > 0:
             light_cooldown -= 1
         elif is_seeing_light:
-            print(">>> PATTERN [0,0,0,X,X,0,0,0] DETECTED AGAIN - STOPPING")
             state = 3
 
     elif state == 3:  # STOP
