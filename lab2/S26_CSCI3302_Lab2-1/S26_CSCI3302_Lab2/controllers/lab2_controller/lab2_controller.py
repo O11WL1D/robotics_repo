@@ -76,14 +76,14 @@ vR = 0
 # so that it can be customized. 
 def report(option):
     if(option==0):
-        print("CURRENT ROBOT STATE:  " + str(robotstate)+ "CURRENT ROBOT SUBSTATE:    " + str(robotsubstate)) 
+        print("CURRENT ROBOT STATE:  " + str(robotstate)+ "  CURRENT ROBOT SUBSTATE:    " + str(robotsubstate)) 
         print("Current pose: [%5f, %5f, %5f]" % (pose_x, pose_y, pose_theta))
 
 
 # Main Control Loop:
 while robot.step(SIM_TIMESTEP) != -1:
 
-    report()
+  
     # Read ground sensor values
     for i, gs in enumerate(ground_sensors):
         gsr[i] = gs.getValue()
@@ -96,6 +96,7 @@ while robot.step(SIM_TIMESTEP) != -1:
             if(robotsubstate==SUBSTATES.Drive_Forward):
                 leftSpeed  =  MAX_SPEED
                 rightSpeed = MAX_SPEED
+                report(0)
 
 
 
