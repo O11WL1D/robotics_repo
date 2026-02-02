@@ -12,11 +12,17 @@ from controller import Robot, Motor, DistanceSensor
 GROUND_SENSOR_THRESHOLD = 0
 
 class STATES(Enum):
+    speed_measurement=1
+
+
+
+class SUBSTATES(Enum):
     Drive_Forward=1
     Start_Line_Detection=2
-    REVERSE=3
-    RSTABLIZE=4
+    Stop=3
+    Calculate_Speed=4
 
+robotstate=STATES.speed_measurement
 
 
 # These are your pose values that you will update by solving the odometry equations
