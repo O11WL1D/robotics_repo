@@ -23,6 +23,7 @@ class SUBSTATES(Enum):
     Calculate_Speed=4
 
 robotstate=STATES.speed_measurement
+robotsubstate=SUBSTATES.Drive_Forward
 
 
 # These are your pose values that you will update by solving the odometry equations
@@ -70,9 +71,19 @@ for i in range(10):
 vL = 0
 vR = 0
 
+
+# robot output function, please try to have all output go in here 
+# so that it can be customized. 
+def report(option):
+    if(option==0):
+        print("CURRENT ROBOT STATE:  " + str(robotstate)+ "CURRENT ROBOT SUBSTATE:    " + str(robotsubstate)) 
+        print("Current pose: [%5f, %5f, %5f]" % (pose_x, pose_y, pose_theta))
+
+
 # Main Control Loop:
 while robot.step(SIM_TIMESTEP) != -1:
 
+    report()
     # Read ground sensor values
     for i, gs in enumerate(ground_sensors):
         gsr[i] = gs.getValue()
@@ -80,6 +91,13 @@ while robot.step(SIM_TIMESTEP) != -1:
 
     if(robotstate==STATES.speed_measurement):
             1==1
+
+
+            if(robotsubstate==SUBSTATES.Drive_Forward):
+                leftSpeed  =  MAX_SPEED
+                rightSpeed = MAX_SPEED
+
+
 
     # TODO: Uncomment to see the ground sensor values!
     # TODO: But when you don't need it, please comment it so you have a clean terminal.
@@ -130,6 +148,9 @@ while robot.step(SIM_TIMESTEP) != -1:
     # 2) Use the pose when you encounter the line last
     # for best results
 
-    print("Current pose: [%5f, %5f, %5f]" % (pose_x, pose_y, pose_theta))
+
     leftMotor.setVelocity(vL)
     rightMotor.setVelocity(vR)
+
+
+
