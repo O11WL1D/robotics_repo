@@ -2,6 +2,7 @@
 
 # You may need to import some classes of the controller module.
 import math
+from enum import Enum
 from controller import Robot, Motor, DistanceSensor
 # import os
 
@@ -9,6 +10,14 @@ from controller import Robot, Motor, DistanceSensor
 # measurements above this threshold can be considered white.
 # TODO: Set a reasonable threshold that separates "line detected" from "no line detected"
 GROUND_SENSOR_THRESHOLD = 0
+
+class STATES(Enum):
+    Drive_Forward=1
+    Start_Line_Detection=2
+    REVERSE=3
+    RSTABLIZE=4
+
+
 
 # These are your pose values that you will update by solving the odometry equations
 pose_x = 0
