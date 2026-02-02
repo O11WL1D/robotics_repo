@@ -57,7 +57,7 @@ rightMotor.setVelocity(2)
 leftSpeed=0
 rightSpeed=0
 
-robotstate=STATES.STABLIZE
+robotstate=STATES.RSTABLIZE
 
 
 prevhighest=0
