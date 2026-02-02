@@ -77,6 +77,10 @@ while robot.step(SIM_TIMESTEP) != -1:
     for i, gs in enumerate(ground_sensors):
         gsr[i] = gs.getValue()
 
+
+    if(robotstate==STATES.speed_measurement):
+            1==1
+
     # TODO: Uncomment to see the ground sensor values!
     # TODO: But when you don't need it, please comment it so you have a clean terminal.
     # print(gsr)
