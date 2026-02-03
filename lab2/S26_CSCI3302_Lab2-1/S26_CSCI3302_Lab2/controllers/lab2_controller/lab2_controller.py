@@ -80,6 +80,7 @@ def report(option, message):
         print("CURRENT ROBOT STATE:  " + str(robotstate)+ "  CURRENT ROBOT SUBSTATE:    " + str(robotsubstate)) 
         print("Current pose: [%5f, %5f, %5f]" % (pose_x, pose_y, pose_theta))
         print("GROUND SENSOR VALUES: " + str(gsr))
+        print("ELAPSED TIME: " + str(currenttime)) 
         print(message)
 
 
@@ -110,6 +111,7 @@ while robot.step(SIM_TIMESTEP) != -1:
                 if((gsr[0]<groundthresh) or (gsr[2]<groundthresh)):
                     robotsubstate=SUBSTATES.Stop
                     
+                    
 
             if(robotsubstate==SUBSTATES.Stop):
                 leftSpeed  =  0
@@ -117,8 +119,14 @@ while robot.step(SIM_TIMESTEP) != -1:
                 robotsubstate=SUBSTATES.Calculate_Speed
 
 
+
             if(robotsubstate==SUBSTATES.Calculate_Speed):
                 currenttime = robot.getTime()
+
+                #todo, calculate linear translation distance and store
+                #in the var EPUCK_MAX_WHEEL_SPEED
+                #This allows you to utilize speed in m/s for future calculations without measuring wheel diameter.
+
                 robotstate=STATES.line_follower
             
             
