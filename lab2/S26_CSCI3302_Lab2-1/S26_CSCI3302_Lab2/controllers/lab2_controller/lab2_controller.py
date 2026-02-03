@@ -105,7 +105,7 @@ while robot.step(SIM_TIMESTEP) != -1:
                 
 
                 if((gsr[0]<groundthresh) or (gsr[2]<groundthresh)):
-                    robotsubstate==SUBSTATES.Stop
+                    robotsubstate=SUBSTATES.Stop
                     
 
             if(robotsubstate==SUBSTATES.Stop):
