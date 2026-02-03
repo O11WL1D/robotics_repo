@@ -164,9 +164,9 @@ while robot.step(SIM_TIMESTEP) != -1:
 
 
 
-            #if(rightcliff):
-             #    print("RIGHT CLIFF")
-              #   robotsubstate=SUBSTATES.Right_Sensor_detects_line
+            if(rightcliff):
+                 print("RIGHT CLIFF")
+                 robotsubstate=SUBSTATES.Right_Sensor_detects_line
 
 
                 
@@ -177,7 +177,7 @@ while robot.step(SIM_TIMESTEP) != -1:
 
             else:
                 
-                rotamt=0.001
+                rotamt=0.05
 
                 if(robotsubstate==SUBSTATES.Left_Sensor_detects_line):
                     leftSpeed  = -MAX_SPEED*rotamt 
