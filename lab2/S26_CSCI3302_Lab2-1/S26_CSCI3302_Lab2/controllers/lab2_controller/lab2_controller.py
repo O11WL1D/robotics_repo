@@ -109,6 +109,8 @@ while robot.step(SIM_TIMESTEP) != -1:
     rightsensordetection=(gsr[1]<groundthresh)
     paststart=(not leftsensordetection and not centersensordetection and not rightsensordetection)
 
+    rightcliff=(centersensordetection and rightsensordetection and not leftsensordetection)
+
     if(robotstate==STATES.speed_measurement):
             1==1
 
@@ -161,25 +163,31 @@ while robot.step(SIM_TIMESTEP) != -1:
                  robotsubstate=SUBSTATES.Center_Sensor_detects_line
 
 
-            if(paststart):
+
+            if(rightcliff):
+                 print("RIGHT CLIFF")
+                 robotsubstate=SUBSTATES.Right_Sensor_detects_line
+
 
                 
 
-                if(robotsubstate==SUBSTATES.Center_Sensor_detects_line):
-                    leftSpeed  =  MAX_SPEED
-                    rightSpeed = MAX_SPEED
+            if(robotsubstate==SUBSTATES.Center_Sensor_detects_line):
+                leftSpeed  =  MAX_SPEED
+                rightSpeed = MAX_SPEED
 
-                else:
-                    
-                    rotamt=0.001
+            else:
+                
+                rotamt=0.001
 
-                    if(robotsubstate==SUBSTATES.Left_Sensor_detects_line):
-                        leftSpeed  =  MAX_SPEED*rotamt 
-                        rightSpeed = -MAX_SPEED*rotamt
+                if(robotsubstate==SUBSTATES.Left_Sensor_detects_line):
+                    leftSpeed  =  MAX_SPEED*rotamt 
+                    rightSpeed = -MAX_SPEED*rotamt
 
-                    if(robotsubstate==SUBSTATES.Right_Sensor_detects_line):
-                        leftSpeed  = -MAX_SPEED*rotamt
-                        rightSpeed = MAX_SPEED*rotamt
+                if(robotsubstate==SUBSTATES.Right_Sensor_detects_line):
+                    leftSpeed  = -MAX_SPEED*rotamt
+                    rightSpeed = MAX_SPEED*rotamt
+
+
 
         
     report(0,currenttime)
