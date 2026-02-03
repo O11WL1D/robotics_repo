@@ -84,6 +84,7 @@ def report(option, message):
 
 
 groundthresh=800
+groundcount=0
 
 # Main Control Loop:
 while robot.step(SIM_TIMESTEP) != -1:
@@ -102,16 +103,25 @@ while robot.step(SIM_TIMESTEP) != -1:
                 leftSpeed  =  MAX_SPEED
                 rightSpeed = MAX_SPEED
                 
-                if(gsr[0]>groundthresh or gsr[2]>groundthresh):
+
+                if((gsr[0]>groundthresh) or (gsr[2]>groundthresh)):
+                    groundcount+=1
+                else:
+                    if(groundcount >0 ):
+                        groundcount-=1
+
+
+                if(groundcount==50):
+                    groundcount=0
                     robotsubstate=SUBSTATES.Stop
                 
-            if(robotsubstate==SUBSTATES.Drive_Forward):
+            if(robotsubstate==SUBSTATES.Stop):
                 leftSpeed  =  0
                 rightSpeed = 0
                 robotstate=STATES.line_follower
             
             
-            report(0,0)
+            report(0,groundcount)
 
 
 
