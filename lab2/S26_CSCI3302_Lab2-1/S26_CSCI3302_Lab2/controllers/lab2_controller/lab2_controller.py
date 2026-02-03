@@ -91,7 +91,7 @@ def report(option, message):
         print(message)
 
 
-groundthresh=300
+groundthresh=330
 groundcount=0
 currenttime=0
 
@@ -109,7 +109,7 @@ while robot.step(SIM_TIMESTEP) != -1:
     rightsensordetection=(gsr[2]<groundthresh)
     paststart=(not leftsensordetection and not centersensordetection and not rightsensordetection)
 
-    rightcliff=(centersensordetection and rightsensordetection and not leftsensordetection)
+    rightcliff=(centersensordetection and not rightsensordetection and leftsensordetection)
 
     if(robotstate==STATES.speed_measurement):
             1==1
@@ -166,7 +166,7 @@ while robot.step(SIM_TIMESTEP) != -1:
 
             if(rightcliff):
                  print("RIGHT CLIFF")
-                 robotsubstate=SUBSTATES.Right_Sensor_detects_line
+                 robotsubstate=SUBSTATES.Left_Sensor_detects_line
 
 
                 
