@@ -148,8 +148,6 @@ while robot.step(SIM_TIMESTEP) != -1:
             
 
              #detect conditions               
-            if(centersensordetection):
-                 robotsubstate=SUBSTATES.Center_Sensor_detects_line
 
 
             if(leftsensordetection):
@@ -159,24 +157,29 @@ while robot.step(SIM_TIMESTEP) != -1:
             if(rightsensordetection):
                  robotsubstate=SUBSTATES.Right_Sensor_detects_line
 
+            if(centersensordetection):
+                 robotsubstate=SUBSTATES.Center_Sensor_detects_line
+
 
             if(paststart):
 
-            
+                
+
                 if(robotsubstate==SUBSTATES.Center_Sensor_detects_line):
                     leftSpeed  =  MAX_SPEED
                     rightSpeed = MAX_SPEED
 
                 else:
                     
+                    rotamt=0.001
 
                     if(robotsubstate==SUBSTATES.Left_Sensor_detects_line):
-                        leftSpeed  =  MAX_SPEED
-                        rightSpeed = -MAX_SPEED
+                        leftSpeed  =  MAX_SPEED*rotamt 
+                        rightSpeed = -MAX_SPEED*rotamt
 
                     if(robotsubstate==SUBSTATES.Right_Sensor_detects_line):
-                        leftSpeed  = -MAX_SPEED
-                        rightSpeed = MAX_SPEED
+                        leftSpeed  = -MAX_SPEED*rotamt
+                        rightSpeed = MAX_SPEED*rotamt
 
         
     report(0,currenttime)
