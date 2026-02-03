@@ -87,6 +87,7 @@ def report(option, message):
         print("Current pose: [%5f, %5f, %5f]" % (pose_x, pose_y, pose_theta))
         print("GROUND SENSOR VALUES: " + str(gsr))
         print("ELAPSED TIME: " + str(currenttime)) 
+        print("Left detection? : " + str(leftsensordetection) + " center detection? " + str(centersensordetection) + " right detection? " + str(rightsensordetection)) 
         print(message)
 
 
@@ -103,7 +104,10 @@ while robot.step(SIM_TIMESTEP) != -1:
         gsr[i] = gs.getValue()
 
 
-
+    leftsensordetection=(gsr[0]<groundthresh)
+    centersensordetection=(gsr[1]<groundthresh)
+    rightsensordetection=(gsr[1]<groundthresh)
+    paststart=(not leftsensordetection and not centersensordetection and not rightsensordetection)
 
     if(robotstate==STATES.speed_measurement):
             1==1
@@ -134,12 +138,48 @@ while robot.step(SIM_TIMESTEP) != -1:
                 #This allows you to utilize speed in m/s for future calculations without measuring wheel diameter.
 
                 robotstate=STATES.line_follower
+                robotsubstate=SUBSTATES.Center_Sensor_detects_line
             
             
-            report(0,currenttime)
+
 
     if(robotstate==STATES.line_follower):
 
+            
+
+             #detect conditions               
+            if(centersensordetection):
+                 robotsubstate=SUBSTATES.Center_Sensor_detects_line
+
+
+            if(leftsensordetection):
+                 robotsubstate=SUBSTATES.Left_Sensor_detects_line
+
+
+            if(rightsensordetection):
+                 robotsubstate=SUBSTATES.Right_Sensor_detects_line
+
+
+            if(paststart):
+
+            
+                if(robotsubstate==SUBSTATES.Center_Sensor_detects_line):
+                    leftSpeed  =  MAX_SPEED
+                    rightSpeed = MAX_SPEED
+
+                else:
+                    
+
+                    if(robotsubstate==SUBSTATES.Left_Sensor_detects_line):
+                        leftSpeed  =  MAX_SPEED
+                        rightSpeed = -MAX_SPEED
+
+                    if(robotsubstate==SUBSTATES.Right_Sensor_detects_line):
+                        leftSpeed  = -MAX_SPEED
+                        rightSpeed = MAX_SPEED
+
+        
+    report(0,currenttime)
 
 
 
