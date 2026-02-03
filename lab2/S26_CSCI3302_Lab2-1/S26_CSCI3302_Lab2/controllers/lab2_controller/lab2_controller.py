@@ -13,6 +13,7 @@ GROUND_SENSOR_THRESHOLD = 0
 
 class STATES(Enum):
     speed_measurement=1
+    line_follower=2
 
 
 
@@ -74,11 +75,15 @@ vR = 0
 
 # robot output function, please try to have all output go in here 
 # so that it can be customized. 
-def report(option):
+def report(option, message):
     if(option==0):
         print("CURRENT ROBOT STATE:  " + str(robotstate)+ "  CURRENT ROBOT SUBSTATE:    " + str(robotsubstate)) 
         print("Current pose: [%5f, %5f, %5f]" % (pose_x, pose_y, pose_theta))
+        print("GROUND SENSOR VALUES: " + str(gsr))
+        print(message)
 
+
+groundthresh=800
 
 # Main Control Loop:
 while robot.step(SIM_TIMESTEP) != -1:
@@ -96,13 +101,23 @@ while robot.step(SIM_TIMESTEP) != -1:
             if(robotsubstate==SUBSTATES.Drive_Forward):
                 leftSpeed  =  MAX_SPEED
                 rightSpeed = MAX_SPEED
-                report(0)
+                
+                if(gsr[0]>groundthresh or gsr[2]>groundthresh):
+                    robotsubstate=SUBSTATES.Stop
+                
+            if(robotsubstate==SUBSTATES.Drive_Forward):
+                leftSpeed  =  0
+                rightSpeed = 0
+                robotstate=STATES.line_follower
+            
+            
+            report(0,0)
 
 
 
     # TODO: Uncomment to see the ground sensor values!
     # TODO: But when you don't need it, please comment it so you have a clean terminal.
-    # print(gsr)
+    
 
     # Part 1
     # TODO: Implement Maximum Speed Measurement under state "speed_measurement"
@@ -150,8 +165,8 @@ while robot.step(SIM_TIMESTEP) != -1:
     # for best results
 
 
-    leftMotor.setVelocity(vL)
-    rightMotor.setVelocity(vR)
+    leftMotor.setVelocity(leftSpeed)
+    rightMotor.setVelocity(rightSpeed)
 
 
 
