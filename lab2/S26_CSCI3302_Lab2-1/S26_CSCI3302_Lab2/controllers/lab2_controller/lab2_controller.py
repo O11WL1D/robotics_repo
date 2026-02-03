@@ -22,6 +22,12 @@ class SUBSTATES(Enum):
     Start_Line_Detection=2
     Stop=3
     Calculate_Speed=4
+    #line follower state sub states
+    Center_Sensor_detects_line=5
+    Left_Sensor_detects_line=6
+    Right_Sensor_detects_line=7
+    No_Sensors_Detect_Line=8
+
 
 robotstate=STATES.speed_measurement
 robotsubstate=SUBSTATES.Drive_Forward
@@ -131,6 +137,9 @@ while robot.step(SIM_TIMESTEP) != -1:
             
             
             report(0,currenttime)
+
+    if(robotstate==STATES.line_follower):
+
 
 
 
