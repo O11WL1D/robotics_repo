@@ -85,6 +85,7 @@ def report(option, message):
 
 groundthresh=300
 groundcount=0
+currenttime=0
 
 # Main Control Loop:
 while robot.step(SIM_TIMESTEP) != -1:
@@ -95,7 +96,7 @@ while robot.step(SIM_TIMESTEP) != -1:
         gsr[i] = gs.getValue()
 
 
-    currenttime=robot.getTime()
+
 
     if(robotstate==STATES.speed_measurement):
             1==1
@@ -113,7 +114,11 @@ while robot.step(SIM_TIMESTEP) != -1:
             if(robotsubstate==SUBSTATES.Stop):
                 leftSpeed  =  0
                 rightSpeed = 0
-                
+                robotsubstate=SUBSTATES.Calculate_Speed
+
+
+            if(robotsubstate==SUBSTATES.Calculate_Speed):
+                currenttime = robot.getTime()
                 robotstate=STATES.line_follower
             
             
