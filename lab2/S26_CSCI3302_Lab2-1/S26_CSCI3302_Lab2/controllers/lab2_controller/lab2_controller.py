@@ -119,6 +119,9 @@ angle_of_rotation_right_total = right_wheel_sensor.getValue()  # radians
 prevleft=0
 prevright=0
 
+diffleft=0
+diffright=0
+
 
 
 # robot output function, please try to have all output go in here 
@@ -136,21 +139,21 @@ def report(option, message):
         print("left_Wheel angle (rad):", angle_of_rotation_left_total)
         print("right_Wheel angle (rad):", angle_of_rotation_right_total)
 
-        print("left_Wheel angle inf (rad):", prevleft)
-        print("right_Wheel angle inf (rad):", prevright)
+        print("left_Wheel angle inf (rad):", diffleft)
+        print("right_Wheel angle inf (rad):", diffright)
 
 
 def find_infi_left_angle_rot(totleft):
-
-     difference=prevleft-totleft
+     global prevleft
+     difference=totleft-prevleft
      prevleft=totleft
      return difference
 
      
      
 def find_infi_right_angle_rot(totright):
-
-     difference=prevright-totright
+     global prevright
+     difference=totright-prevright
      prevright=totright
      return difference
 
@@ -262,8 +265,11 @@ while robot.step(SIM_TIMESTEP) != -1:
                     rightSpeed = -MAX_SPEED*rotamt
 
 
-
-        
+    angle_of_rotation_left_total = left_wheel_sensor.getValue()  # radians
+    angle_of_rotation_right_total = right_wheel_sensor.getValue()  # radians
+    diffright=find_infi_right_angle_rot(angle_of_rotation_right_total)
+    diffleft=find_infi_left_angle_rot(angle_of_rotation_left_total)
+            
     report(0,currenttime)
 
 
