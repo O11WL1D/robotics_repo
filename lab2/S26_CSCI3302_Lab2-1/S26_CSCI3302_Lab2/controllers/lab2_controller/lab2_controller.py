@@ -112,9 +112,19 @@ vL = 0
 vR = 0
 
 
+
+angle_of_rotation_left_total = left_wheel_sensor.getValue()  # radians
+angle_of_rotation_right_total = right_wheel_sensor.getValue()  # radians
+
+prevleft=0
+prevright=0
+
+
+
 # robot output function, please try to have all output go in here 
 # so that it can be customized. 
 def report(option, message):
+  
     if(option==0):
         print("CURRENT ROBOT STATE:  " + str(robotstate)+ "  CURRENT ROBOT SUBSTATE:    " + str(robotsubstate)) 
         print("Current pose: [%5f, %5f, %5f]" % (pose_x, pose_y, pose_theta))
@@ -122,10 +132,35 @@ def report(option, message):
         print("ELAPSED TIME: " + str(currenttime)) 
         print("Left detection? : " + str(leftsensordetection) + " center detection? " + str(centersensordetection) + " right detection? " + str(rightsensordetection)) 
         print(message)
-        angle = left_wheel_sensor.getValue()  # radians
-        print("left_Wheel angle (rad):", angle)
-        angle = right_wheel_sensor.getValue()  # radians
-        print("right_Wheel angle (rad):", angle)
+        
+        print("left_Wheel angle (rad):", angle_of_rotation_left_total)
+        print("right_Wheel angle (rad):", angle_of_rotation_right_total)
+
+        print("left_Wheel angle inf (rad):", prevleft)
+        print("right_Wheel angle inf (rad):", prevright)
+
+
+def find_infi_left_angle_rot(totleft):
+
+     difference=prevleft-totleft
+     prevleft=totleft
+     return difference
+
+     
+     
+def find_infi_right_angle_rot(totright):
+
+     difference=prevright-totright
+     prevright=totright
+     return difference
+
+
+
+
+def calculate_infinitesimal_dist_travelled():
+     1==1
+
+     
 
 
 
