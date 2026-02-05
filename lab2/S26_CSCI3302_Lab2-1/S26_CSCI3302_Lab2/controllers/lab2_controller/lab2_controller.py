@@ -118,9 +118,13 @@ angle_of_rotation_right_total = right_wheel_sensor.getValue()  # radians
 
 prevleft=0
 prevright=0
+prevtime=0
 
 diffleft=0
 diffright=0
+
+infvelofrotleft=0
+infvelofrotright=0
 
 
 
@@ -157,13 +161,19 @@ def find_infi_right_angle_rot(totright):
      prevright=totright
      return difference
 
+def find_inf_time(currenttime):
+     global prevtime
+     difference=currenttime-prevtime
+     prevtime=currenttime
+     return difference
 
-
-
-def calculate_infinitesimal_dist_travelled():
-     1==1
-
+def calc_velocity(distance,time):
+     return (distance/time)
      
+
+
+def calculate_inf_velo_matrix(rightinf):
+     1==1
 
 
 
@@ -265,10 +275,14 @@ while robot.step(SIM_TIMESTEP) != -1:
                     rightSpeed = -MAX_SPEED*rotamt
 
 
+    #odometry calculations.
     angle_of_rotation_left_total = left_wheel_sensor.getValue()  # radians
     angle_of_rotation_right_total = right_wheel_sensor.getValue()  # radians
-    diffright=find_infi_right_angle_rot(angle_of_rotation_right_total)
-    diffleft=find_infi_left_angle_rot(angle_of_rotation_left_total)
+    diffright=find_infi_right_angle_rot(angle_of_rotation_right_total) #radians per step.
+    diffleft=find_infi_left_angle_rot(angle_of_rotation_left_total) #radians per step.
+
+
+    #see brainstorm doc if confused. 
             
     report(0,currenttime)
 
