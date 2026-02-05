@@ -126,6 +126,8 @@ diffright=0
 infvelofrotleft=0
 infvelofrotright=0
 
+inf_time=0
+
 
 
 # robot output function, please try to have all output go in here 
@@ -145,6 +147,13 @@ def report(option, message):
 
         print("left_Wheel angle inf (rad):", diffleft)
         print("right_Wheel angle inf (rad):", diffright)
+
+        print("left_Wheel angle velo inf (rad):", infvelofrotleft)
+        print("right_Wheel angle velo inf (rad):", infvelofrotright)
+
+        #print("inf_time :", inf_time)
+
+
 
 
 def find_infi_left_angle_rot(totleft):
@@ -184,6 +193,7 @@ currenttime=0
 # Main Control Loop:
 while robot.step(SIM_TIMESTEP) != -1:
 
+    currenttime = robot.getTime()
   
     # Read ground sensor values
     for i, gs in enumerate(ground_sensors):
@@ -219,7 +229,7 @@ while robot.step(SIM_TIMESTEP) != -1:
 
 
             if(robotsubstate==SUBSTATES.Calculate_Speed):
-                currenttime = robot.getTime()
+                
 
                 #todo, calculate linear translation distance and store
                 #in the var EPUCK_MAX_WHEEL_SPEED
@@ -281,6 +291,11 @@ while robot.step(SIM_TIMESTEP) != -1:
     diffright=find_infi_right_angle_rot(angle_of_rotation_right_total) #radians per step.
     diffleft=find_infi_left_angle_rot(angle_of_rotation_left_total) #radians per step.
 
+    inf_time=find_inf_time(currenttime)
+
+
+    infvelofrotleft=calc_velocity(diffleft,inf_time)
+    infvelofrotright=calc_velocity(diffright,inf_time)
 
     #see brainstorm doc if confused. 
             
