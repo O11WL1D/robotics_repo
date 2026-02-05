@@ -2,8 +2,10 @@
 
 # You may need to import some classes of the controller module.
 import math
+import numpy as np
 from enum import Enum
 from controller import Robot, Motor, DistanceSensor
+
 # import os
 
 # Ground Sensor Measurements under this threshold are black
@@ -63,6 +65,37 @@ rightMotor.setPosition(float('inf'))
 leftMotor.setVelocity(0.0)
 rightMotor.setVelocity(0.0)
 
+
+#init sensors.
+left_wheel_sensor = robot.getDevice("left wheel sensor")
+right_wheel_sensor = robot.getDevice("right wheel sensor")
+left_wheel_sensor.enable(SIM_TIMESTEP)
+right_wheel_sensor.enable(SIM_TIMESTEP)
+
+#                                      MATRIX MATH EXAMPLE
+# input two matrices
+mat1 = ([1, 6, 5],
+        [3 ,4, 8],
+        [2, 12, 3])
+
+mat2 = ([3, 4, 6],
+        [5, 6, 7],
+        [6,56, 7])
+
+#this is output:
+
+#[[ 63 320  83]
+ #[ 77 484 102]
+# [ 84 248 117]]
+
+# This will return dot product
+res = np.dot(mat1,mat2)
+
+
+# print resulted matrix
+print(res)
+
+
 # Initialize and Enable the Ground Sensors
 gsr = [0, 0, 0]
 ground_sensors = [robot.getDevice('gs0'), robot.getDevice(
@@ -89,6 +122,11 @@ def report(option, message):
         print("ELAPSED TIME: " + str(currenttime)) 
         print("Left detection? : " + str(leftsensordetection) + " center detection? " + str(centersensordetection) + " right detection? " + str(rightsensordetection)) 
         print(message)
+        angle = left_wheel_sensor.getValue()  # radians
+        print("left_Wheel angle (rad):", angle)
+        angle = right_wheel_sensor.getValue()  # radians
+        print("right_Wheel angle (rad):", angle)
+
 
 
 groundthresh=330
@@ -220,6 +258,7 @@ while robot.step(SIM_TIMESTEP) != -1:
     # 4) Disable all console output to simulate the robot superfast
     # and test the robustness of your approach.
     #
+
     # Hints for update_odometry:
     #
     # 1) Divide vL/vR by MAX_SPEED to normalize, then multiply with
