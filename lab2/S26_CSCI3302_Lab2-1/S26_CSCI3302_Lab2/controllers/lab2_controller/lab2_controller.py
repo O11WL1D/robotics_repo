@@ -12,7 +12,7 @@ from controller import Robot, Motor, DistanceSensor
 # measurements above this threshold can be considered white.
 # TODO: Set a reasonable threshold that separates "line detected" from "no line detected"
 GROUND_SENSOR_THRESHOLD = 0
-
+start_line_timer = 0.0 # Track duration for loop closure
 class STATES(Enum):
     speed_measurement=1
     line_follower=2
@@ -52,6 +52,7 @@ robot = Robot()
 EPUCK_AXLE_DIAMETER = 0.053  # ePuck's wheels are 53mm apart.
 # TODO: set the ePuck wheel speed in m/s after measuring the speed (Part 1)
 EPUCK_MAX_WHEEL_SPEED = 0
+EPUCK_WHEEL_RADIUS = 0.025
 MAX_SPEED = 6.28
 
 # get the time step of the current world.
@@ -183,7 +184,29 @@ def calc_velocity(distance,time):
 
 def calculate_inf_velo_matrix(rightinf):
      1==1
+     
 
+#Odometry
+def update_odometry(vL, vR, delta_time):
+    global pose_x, pose_y, pose_theta
+
+ 
+    # normalize and scale with speeds
+    vL_mps = (vL / MAX_SPEED) * EPUCK_MAX_WHEEL_SPEED
+    vR_mps = (vR / MAX_SPEED) * EPUCK_MAX_WHEEL_SPEED
+
+    #find the distances
+    dist_left = vL_mps * delta_time
+    dist_right = vR_mps * delta_time
+
+    # find the robot's linear and angular displacement
+    dist_center = (dist_left + dist_right) / 2.0
+    delta_theta = (dist_right - dist_left) / EPUCK_AXLE_DIAMETER
+
+    # update pose
+    pose_x += dist_center * math.cos(pose_theta)
+    pose_y += dist_center * math.sin(pose_theta)
+    pose_theta += delta_theta
 
 
 groundthresh=330
@@ -228,8 +251,11 @@ while robot.step(SIM_TIMESTEP) != -1:
 
 
 
-            if(robotsubstate==SUBSTATES.Calculate_Speed):
-                
+            if(robotsubstate==SUBSTATES.Calculate_Speed):               
+                WHEEL_RADIUS = 0.0205
+                distance_left = angle_of_rotation_left_total * WHEEL_RADIUS
+                EPUCK_MAX_WHEEL_SPEED = distance_left / currenttime
+                print(f"Calculated Speed: {EPUCK_MAX_WHEEL_SPEED} m/s")
 
                 #todo, calculate linear translation distance and store
                 #in the var EPUCK_MAX_WHEEL_SPEED
@@ -245,7 +271,27 @@ while robot.step(SIM_TIMESTEP) != -1:
 
             
 
-             #detect conditions               
+             #detect conditions 
+             #PART 3 Implementation:
+            if leftsensordetection and centersensordetection and rightsensordetection:
+                start_line_timer += (SIM_TIMESTEP / 1000.0)
+                if start_line_timer >= 0.1:
+                    print("LOOP CLOSURE!!! RESETTING POSE")
+                    print("LOOP CLOSURE!!! RESETTING POSE")
+                    print("LOOP CLOSURE!!! RESETTING POSE")
+                    print("LOOP CLOSURE!!! RESETTING POSE")
+                    print("LOOP CLOSURE!!! RESETTING POSE")
+                    print("LOOP CLOSURE!!! RESETTING POSE")
+                    print("LOOP CLOSURE!!! RESETTING POSE")
+                    print("LOOP CLOSURE!!! RESETTING POSE")
+                    print("LOOP CLOSURE!!! RESETTING POSE")
+                    print("LOOP CLOSURE!!! RESETTING POSE")
+                    print("LOOP CLOSURE!!! RESETTING POSE")
+                    print("LOOP CLOSURE!!! RESETTING POSE")
+                    pose_x, pose_y, pose_theta = 0,0,0
+            else:
+                start_line_time = 0.0
+                       
 
 
             if(leftsensordetection):
@@ -283,6 +329,9 @@ while robot.step(SIM_TIMESTEP) != -1:
                 if(robotsubstate==SUBSTATES.Right_Sensor_detects_line):
                     leftSpeed  = MAX_SPEED*rotamt
                     rightSpeed = -MAX_SPEED*rotamt
+             
+                    
+    
 
 
     #odometry calculations.
@@ -298,7 +347,9 @@ while robot.step(SIM_TIMESTEP) != -1:
     infvelofrotright=calc_velocity(diffright,inf_time)
 
     #see brainstorm doc if confused. 
-            
+
+    delta_time = SIM_TIMESTEP / 1000.0  
+    update_odometry(leftSpeed, rightSpeed, delta_time)
     report(0,currenttime)
 
 
@@ -356,6 +407,5 @@ while robot.step(SIM_TIMESTEP) != -1:
 
     leftMotor.setVelocity(leftSpeed)
     rightMotor.setVelocity(rightSpeed)
-
 
 
