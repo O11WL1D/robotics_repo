@@ -151,10 +151,69 @@ def report(option, message):
 
         print("left_Wheel angle velo inf (rad):", infvelofrotleft)
         print("right_Wheel angle velo inf (rad):", infvelofrotright)
+        print("Line detected?  " + str(linedetected))
 
         #print("inf_time :", inf_time)
 
+    if(option==1):
+         print("Current pose: [%5f, %5f, %5f]" % (pose_x, pose_y, pose_theta))
+         
 
+
+
+def loopclosure():
+     
+        #this function fires even when the start line is 
+        #not crossed. 
+        global leftsensordetection
+        global centersensordetection
+        global rightsensordetection
+        global start_line_timer
+        global start_line_time
+        global pose_theta
+        global pose_y
+        global pose_x
+
+            #detect conditions 
+            #PART 3 Implementation:
+        if leftsensordetection and centersensordetection and rightsensordetection:
+            start_line_timer += (SIM_TIMESTEP / 1000.0)
+            if start_line_timer >= 0.1:
+                print("LOOP CLOSURE!!! RESETTING POSE")
+                print("LOOP CLOSURE!!! RESETTING POSE")
+                print("LOOP CLOSURE!!! RESETTING POSE")
+                print("LOOP CLOSURE!!! RESETTING POSE")
+                print("LOOP CLOSURE!!! RESETTING POSE")
+                print("LOOP CLOSURE!!! RESETTING POSE")
+                print("LOOP CLOSURE!!! RESETTING POSE")
+                print("LOOP CLOSURE!!! RESETTING POSE")
+                print("LOOP CLOSURE!!! RESETTING POSE")
+                print("LOOP CLOSURE!!! RESETTING POSE")
+                print("LOOP CLOSURE!!! RESETTING POSE")
+                print("LOOP CLOSURE!!! RESETTING POSE")
+                pose_x, pose_y, pose_theta = 0,0,0
+        else:
+            start_line_time = 0.0
+
+
+
+def loopclosure2():
+     
+
+        global leftsensordetection
+        global centersensordetection
+        global rightsensordetection
+        global start_line_timer
+        global start_line_time
+        global pose_theta
+        global pose_y
+        global pose_x
+        global linedetected
+
+
+
+
+               
 
 
 def find_infi_left_angle_rot(totleft):
@@ -229,6 +288,8 @@ while robot.step(SIM_TIMESTEP) != -1:
     paststart=(not leftsensordetection and not centersensordetection and not rightsensordetection)
 
     rightcliff=(centersensordetection and not rightsensordetection and leftsensordetection)
+    linedetected= ((gsr[0]<groundthresh) and (gsr[2]<groundthresh))
+
 
     if(robotstate==STATES.speed_measurement):
             1==1
@@ -267,31 +328,13 @@ while robot.step(SIM_TIMESTEP) != -1:
             
 
 
+
+
     if(robotstate==STATES.line_follower):
 
-            
 
-             #detect conditions 
-             #PART 3 Implementation:
-            if leftsensordetection and centersensordetection and rightsensordetection:
-                start_line_timer += (SIM_TIMESTEP / 1000.0)
-                if start_line_timer >= 0.1:
-                    print("LOOP CLOSURE!!! RESETTING POSE")
-                    print("LOOP CLOSURE!!! RESETTING POSE")
-                    print("LOOP CLOSURE!!! RESETTING POSE")
-                    print("LOOP CLOSURE!!! RESETTING POSE")
-                    print("LOOP CLOSURE!!! RESETTING POSE")
-                    print("LOOP CLOSURE!!! RESETTING POSE")
-                    print("LOOP CLOSURE!!! RESETTING POSE")
-                    print("LOOP CLOSURE!!! RESETTING POSE")
-                    print("LOOP CLOSURE!!! RESETTING POSE")
-                    print("LOOP CLOSURE!!! RESETTING POSE")
-                    print("LOOP CLOSURE!!! RESETTING POSE")
-                    print("LOOP CLOSURE!!! RESETTING POSE")
-                    pose_x, pose_y, pose_theta = 0,0,0
-            else:
-                start_line_time = 0.0
-                       
+            #loopclosure()
+
 
 
             if(leftsensordetection):
