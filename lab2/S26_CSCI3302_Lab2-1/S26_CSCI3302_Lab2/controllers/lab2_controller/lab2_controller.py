@@ -409,7 +409,7 @@ while robot.step(SIM_TIMESTEP) != -1:
 
     delta_time = SIM_TIMESTEP / 1000.0  
     update_odometry(leftSpeed, rightSpeed, delta_time)
-    report(0,currenttime)
+    report(1,currenttime)
 
 
 
