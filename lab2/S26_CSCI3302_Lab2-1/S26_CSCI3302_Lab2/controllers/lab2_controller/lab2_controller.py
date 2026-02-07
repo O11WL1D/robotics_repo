@@ -211,10 +211,20 @@ def loopclosure2():
         global pose_x
         global linedetected
 
-
-
         if(linedetected):
-             pose_x, pose_y, pose_theta=0,0,0
+            print("LOOP CLOSURE!!! RESETTING POSE")
+            print("LOOP CLOSURE!!! RESETTING POSE")
+            print("LOOP CLOSURE!!! RESETTING POSE")
+            print("LOOP CLOSURE!!! RESETTING POSE")
+            print("LOOP CLOSURE!!! RESETTING POSE")
+            print("LOOP CLOSURE!!! RESETTING POSE")
+            print("LOOP CLOSURE!!! RESETTING POSE")
+            print("LOOP CLOSURE!!! RESETTING POSE")
+            print("LOOP CLOSURE!!! RESETTING POSE")
+            print("LOOP CLOSURE!!! RESETTING POSE")
+            print("LOOP CLOSURE!!! RESETTING POSE")
+            print("LOOP CLOSURE!!! RESETTING POSE")
+            pose_x, pose_y, pose_theta=0,0,0
 
 
                
@@ -399,7 +409,57 @@ while robot.step(SIM_TIMESTEP) != -1:
 
     delta_time = SIM_TIMESTEP / 1000.0  
     update_odometry(leftSpeed, rightSpeed, delta_time)
-    report(1,currenttime)
+    report(0,currenttime)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
