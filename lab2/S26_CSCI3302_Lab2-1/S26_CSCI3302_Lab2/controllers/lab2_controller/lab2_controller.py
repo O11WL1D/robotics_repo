@@ -129,7 +129,7 @@ infvelofrotright=0
 
 inf_time=0
 
-
+ldetectioncnt=0
 
 # robot output function, please try to have all output go in here 
 # so that it can be customized. 
@@ -152,6 +152,7 @@ def report(option, message):
         print("left_Wheel angle velo inf (rad):", infvelofrotleft)
         print("right_Wheel angle velo inf (rad):", infvelofrotright)
         print("Line detected?  " + str(linedetected))
+        print("line detected count " + str(ldetectioncnt))
 
         #print("inf_time :", inf_time)
 
@@ -211,6 +212,9 @@ def loopclosure2():
         global linedetected
 
 
+
+        if(linedetected):
+             pose_x, pose_y, pose_theta=0,0,0
 
 
                
@@ -288,8 +292,10 @@ while robot.step(SIM_TIMESTEP) != -1:
     paststart=(not leftsensordetection and not centersensordetection and not rightsensordetection)
 
     rightcliff=(centersensordetection and not rightsensordetection and leftsensordetection)
-    linedetected= ((gsr[0]<groundthresh) and (gsr[2]<groundthresh))
+    linedetected= ((gsr[0]<groundthresh) and (gsr[2]<groundthresh) and (gsr[1]<groundthresh)) and ((pose_theta==0) or (pose_theta>5))
 
+    if(linedetected):
+         ldetectioncnt+=1
 
     if(robotstate==STATES.speed_measurement):
             1==1
@@ -300,7 +306,7 @@ while robot.step(SIM_TIMESTEP) != -1:
                 rightSpeed = MAX_SPEED
                 
 
-                if((gsr[0]<groundthresh) or (gsr[2]<groundthresh)):
+                if(linedetected):
                     robotsubstate=SUBSTATES.Stop
                     
                     
@@ -334,7 +340,7 @@ while robot.step(SIM_TIMESTEP) != -1:
 
 
             #loopclosure()
-
+            loopclosure2()
 
 
             if(leftsensordetection):
@@ -393,7 +399,7 @@ while robot.step(SIM_TIMESTEP) != -1:
 
     delta_time = SIM_TIMESTEP / 1000.0  
     update_odometry(leftSpeed, rightSpeed, delta_time)
-    report(0,currenttime)
+    report(1,currenttime)
 
 
 
