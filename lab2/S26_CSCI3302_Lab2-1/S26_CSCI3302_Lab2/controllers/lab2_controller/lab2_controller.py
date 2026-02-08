@@ -335,7 +335,7 @@ def update_odometry2(infveloleft,infveloright):
      global tmatrix
      global theta
      global tempIframe  
-     theta = totalrobotframe[2][0]
+     
 
     
 
@@ -350,10 +350,11 @@ def update_odometry2(infveloleft,infveloright):
 
      totalrobotframe=np.add(tempframe,totalrobotframe)
 
+     theta = totalrobotframe[2][0]   
 
      tmatrix=np.array([[math.cos(theta), -math.sin(theta), 0],
-             [math.sin(theta), math.cos(theta), 0],
-             [0, 0, 1]])
+                      [math.sin(theta), math.cos(theta), 0],
+                      [0, 0, 1]])
      
 
      tempIframe=np.dot(tmatrix,tempframe)
