@@ -291,57 +291,35 @@ def update_odometry(vL, vR, delta_time):
 
 
 
-#                                      MATRIX MATH EXAMPLE
-# input two matrices
-mat1 = ([1, 6, 5],
-        [3 ,4, 8],
-        [2, 12, 3])
-
-mat2 = ([3, 4, 6],
-        [5, 6, 7],
-        [6,56, 7])
-
-#this is output:
-
-#[[ 63 320  83]
-#[ 77 484 102]
-# [ 84 248 117]]
-
-# This will return dot product
-res = np.dot(mat1,mat2)
-
-
-# print resulted matrix
-print(res)
 
 
 
-robotframe= ([0],
+robotframe= np.array([[0],
             [0],
-            [0])
+            [0]])
 
 
-totalrobotframe=([0],
+totalrobotframe=np.array([[0],
                  [0],
-                [0])
+                [0]])
 
-totalIframe=([0],
+totalIframe=np.array([[0],
              [0],
-             [0])
+             [0]])
 
 
-tempIframe=([0],
+tempIframe=np.array([[0],
              [0],
-             [0])
+             [0]])
 
 
-tmatrix=([0, 0, 0],
+tmatrix=np.array([[0, 0, 0],
         [0, 0, 0],
-        [0, 0, 0])
+        [0, 0, 0]])
 
-tempframe= ([0],
+tempframe=np.array ([[0],
             [0],
-            [0])
+            [0]])
 
 
 theta=0
@@ -362,9 +340,9 @@ def update_odometry2(infveloleft,infveloright):
     
 
 
-     tempframe=([(((infveloleft*EPUCK_WHEEL_RADIUS))  + ((infveloright*EPUCK_WHEEL_RADIUS) ))/(2)],
+     tempframe=np.array([[(((infveloleft*EPUCK_WHEEL_RADIUS))  + ((infveloright*EPUCK_WHEEL_RADIUS) ))/(2)],
                                                                    [0],
-                   [  ((infveloright*EPUCK_WHEEL_RADIUS)  - (infveloleft*EPUCK_WHEEL_RADIUS) )/(EPUCK_AXLE_DIAMETER)  ])
+                   [  ((infveloright*EPUCK_WHEEL_RADIUS)  - (infveloleft*EPUCK_WHEEL_RADIUS) )/(EPUCK_AXLE_DIAMETER)  ]])
 
 
 
@@ -373,9 +351,9 @@ def update_odometry2(infveloleft,infveloright):
      totalrobotframe=np.add(tempframe,totalrobotframe)
 
 
-     tmatrix=([math.cos(theta), -math.sin(theta), 0],
+     tmatrix=np.array([[math.cos(theta), -math.sin(theta), 0],
              [math.sin(theta), math.cos(theta), 0],
-             [0, 0, 1])
+             [0, 0, 1]])
      
 
      tempIframe=np.dot(tmatrix,tempframe)
@@ -522,6 +500,8 @@ while robot.step(SIM_TIMESTEP) != -1:
             delta_time = SIM_TIMESTEP / 1000.0  
             #update_odometry(leftSpeed, rightSpeed, delta_time)
             update_odometry2(infvelofrotleft,infvelofrotright)
+
+
 
     report(0,currenttime)
 
