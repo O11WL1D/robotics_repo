@@ -375,7 +375,7 @@ def update_odometry2(infveloleft,infveloright):
 
      tmatrix=([math.cos(theta), -math.sin(theta), 0],
              [math.sin(theta), math.cos(theta), 0],
-             [0, 0, 0])
+             [0, 0, 1])
      
 
      tempIframe=np.dot(tmatrix,tempframe)
@@ -505,23 +505,23 @@ while robot.step(SIM_TIMESTEP) != -1:
     
 
 
-    #odometry calculations.
-    angle_of_rotation_left_total = left_wheel_sensor.getValue()  # radians
-    angle_of_rotation_right_total = right_wheel_sensor.getValue()  # radians
-    diffright=find_infi_right_angle_rot(angle_of_rotation_right_total) #radians per step.
-    diffleft=find_infi_left_angle_rot(angle_of_rotation_left_total) #radians per step.
+            #odometry calculations.
+            angle_of_rotation_left_total = left_wheel_sensor.getValue()  # radians
+            angle_of_rotation_right_total = right_wheel_sensor.getValue()  # radians
+            diffright=find_infi_right_angle_rot(angle_of_rotation_right_total) #radians per step.
+            diffleft=find_infi_left_angle_rot(angle_of_rotation_left_total) #radians per step.
 
-    inf_time=find_inf_time(currenttime)
+            inf_time=find_inf_time(currenttime)
 
 
-    infvelofrotleft=calc_velocity(diffleft,inf_time)
-    infvelofrotright=calc_velocity(diffright,inf_time)
+            infvelofrotleft=calc_velocity(diffleft,inf_time)
+            infvelofrotright=calc_velocity(diffright,inf_time)
 
-    #see brainstorm doc if confused. 
+            #see brainstorm doc if confused. 
 
-    delta_time = SIM_TIMESTEP / 1000.0  
-    #update_odometry(leftSpeed, rightSpeed, delta_time)
-    update_odometry2(infvelofrotleft,infvelofrotright)
+            delta_time = SIM_TIMESTEP / 1000.0  
+            #update_odometry(leftSpeed, rightSpeed, delta_time)
+            update_odometry2(infvelofrotleft,infvelofrotright)
 
     report(0,currenttime)
 
