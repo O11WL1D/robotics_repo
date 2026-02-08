@@ -155,6 +155,7 @@ def report(option, message):
         #print("line detected count " + str(ldetectioncnt))
         print("total Robot frame: \n", totalrobotframe)
         print("total I frame: \n", totalIframe)
+        print("Theta " + str(theta))
 
         #print("inf_time :", inf_time)
 
@@ -329,6 +330,9 @@ totalIframe=([0],
              [0])
 
 
+tempIframe=([0],
+             [0],
+             [0])
 
 
 tmatrix=([0, 0, 0],
@@ -351,9 +355,11 @@ def update_odometry2(infveloleft,infveloright):
      global totalIframe
      global tempframe
      global tmatrix
-     global theta 
+     global theta
+     global tempIframe  
      theta = totalrobotframe[2][0]
 
+    
 
 
      tempframe=([(((infveloleft*EPUCK_WHEEL_RADIUS))  + ((infveloright*EPUCK_WHEEL_RADIUS) ))/(2)],
@@ -371,9 +377,10 @@ def update_odometry2(infveloleft,infveloright):
              [math.sin(theta), math.cos(theta), 0],
              [0, 0, 0])
      
-     totalIframe=np.dot(tmatrix,tempframe)
 
+     tempIframe=np.dot(tmatrix,tempframe)
 
+     totalIframe=np.add(totalIframe,tempIframe)
 
 
 
