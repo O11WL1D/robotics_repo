@@ -352,7 +352,7 @@ def update_odometry2(infveloleft,infveloright):
      global tempframe
      global tmatrix
      global theta 
-     theta = totalrobotframe[2]
+     theta = totalrobotframe[2][0]
 
 
 
