@@ -379,6 +379,12 @@ def update_odometry2(infveloleft,infveloright):
      global theta
      global tempIframe  
      
+     #correction factor was calculated like this:
+     # pre correction factor reported radians turned after 90 deg = 1.15
+     # correct num radians = 1.57= 90 deg
+     # 1.57 = x (1.15)
+     # x= correctionfactor= 1.57/1.15
+     
      correctionfactor=1.37
     
 
