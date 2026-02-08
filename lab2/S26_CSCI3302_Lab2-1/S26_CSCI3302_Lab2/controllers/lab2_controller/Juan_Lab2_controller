@@ -1,0 +1,245 @@
+"""csci3302_lab2 controller - Part 1 + Part 2 (line + odom) + Part 2C pose output + Part 3 loop closure."""
+
+import math
+from controller import Robot
+
+# --- Part 1 threshold (your original working assumption) ---
+GROUND_SENSOR_THRESHOLD = 250
+
+robot = Robot()
+SIM_TIMESTEP = int(robot.getBasicTimeStep())
+
+# Globals
+EPUCK_AXLE_DIAMETER = 0.053  # meters (wheel-to-wheel distance for e-puck)
+EPUCK_MAX_WHEEL_SPEED = 0.0  # m/s after Part 1 (measured)
+MAX_SPEED = 6.28             # rad/s (motor max in many e-puck models)
+
+# -------------------------
+# Part 2 line detection knobs (based on your debug)
+# floor ~845-852, line ~300 => line is LOW
+# -------------------------
+LINE_IS_HIGH = False
+LINE_THRESHOLD = 600  # between ~300 and ~850; tune if needed
+
+def on_line(v: float) -> bool:
+    return (v > LINE_THRESHOLD) if LINE_IS_HIGH else (v < LINE_THRESHOLD)
+
+# -------------------------
+# Pose (odometry) - MUST be initialized before loop
+# -------------------------
+pose_x = 0.0
+pose_y = 0.0
+pose_theta = 0.0
+
+def update_odometry(vL_cmd: float, vR_cmd: float):
+    global pose_x, pose_y, pose_theta
+
+    if EPUCK_MAX_WHEEL_SPEED <= 0.0:
+        return
+
+    dt = SIM_TIMESTEP / 1000.0  # seconds (fixed timestep)
+
+    # Convert commanded rad/s into m/s using measured max wheel speed
+    vL_mps = (vL_cmd / MAX_SPEED) * EPUCK_MAX_WHEEL_SPEED
+    vR_mps = (vR_cmd / MAX_SPEED) * EPUCK_MAX_WHEEL_SPEED
+
+    dL = vL_mps * dt
+    dR = vR_mps * dt
+
+    dC = (dL + dR) / 2.0
+    dTheta = (dR - dL) / EPUCK_AXLE_DIAMETER
+
+    theta_mid = pose_theta + 0.5 * dTheta
+    pose_x += dC * math.cos(theta_mid)
+    pose_y += dC * math.sin(theta_mid)
+    pose_theta += dTheta
+
+    pose_theta = math.atan2(math.sin(pose_theta), math.cos(pose_theta))
+
+# Motors
+leftMotor = robot.getDevice('left wheel motor')
+rightMotor = robot.getDevice('right wheel motor')
+leftMotor.setPosition(float('inf'))
+rightMotor.setPosition(float('inf'))
+leftMotor.setVelocity(0.0)
+rightMotor.setVelocity(0.0)
+
+# Ground sensors
+gsr = [0.0, 0.0, 0.0]
+ground_sensors = [
+    robot.getDevice('gs0'),  # left
+    robot.getDevice('gs1'),  # center
+    robot.getDevice('gs2'),  # right
+]
+for gs in ground_sensors:
+    gs.enable(SIM_TIMESTEP)
+
+# Optional GPS (if your world has one); otherwise fallback to DIST_TO_START_LINE
+gps = None
+try:
+    gps = robot.getDevice("gps")
+    gps.enable(SIM_TIMESTEP)
+except Exception:
+    gps = None
+
+# Let sensors settle
+for _ in range(10):
+    robot.step(SIM_TIMESTEP)
+
+# --- State ---
+state = "speed_measurement"
+
+# Part 1 bookkeeping
+t_start = None
+pos_start = None
+DIST_TO_START_LINE = 0.15
+line_count = 0
+
+# Part 1 robustness variables (your working logic)
+start_on_line_checked = False
+started_on_line = False
+off_line_count = 0
+
+# -------------------------
+# Part 3 loop closure bookkeeping
+# -------------------------
+STARTLINE_HOLD_TIME = 0.10   # seconds (per rubric hint)
+STARTLINE_COOLDOWN = 1.00    # seconds (prevents false triggers near corners)
+
+startline_on_time = None     # when we first observed "all three on line"
+startline_armed = True       # can we trigger a reset now?
+last_reset_time = -1e9       # time we last reset pose (for cooldown)
+
+while robot.step(SIM_TIMESTEP) != -1:
+
+    # Read ground sensors
+    for i, gs in enumerate(ground_sensors):
+        gsr[i] = gs.getValue()
+
+    # Intended wheel speeds
+    vL = 0.0
+    vR = 0.0
+
+    # ----------------------
+    # Part 1: speed measurement (working version)
+    # ----------------------
+    if state == "speed_measurement":
+        vL = MAX_SPEED
+        vR = MAX_SPEED
+
+        center = gsr[1]
+        on_start_line = (center < GROUND_SENSOR_THRESHOLD) or (center > (GROUND_SENSOR_THRESHOLD + 200))
+
+        if not start_on_line_checked:
+            started_on_line = on_start_line
+            start_on_line_checked = True
+            if not started_on_line:
+                t_start = robot.getTime()
+                if gps is not None:
+                    pos_start = gps.getValues()
+
+        if started_on_line and t_start is None:
+            if not on_start_line:
+                off_line_count += 1
+            else:
+                off_line_count = 0
+
+            if off_line_count >= 3:
+                t_start = robot.getTime()
+                if gps is not None:
+                    pos_start = gps.getValues()
+                line_count = 0
+
+        if t_start is not None:
+            if on_start_line:
+                line_count += 1
+            else:
+                line_count = 0
+
+            if line_count >= 3:
+                vL = 0.0
+                vR = 0.0
+
+                t_end = robot.getTime()
+                elapsed = t_end - t_start
+
+                if gps is not None and pos_start is not None:
+                    pos_end = gps.getValues()
+                    dx = pos_end[0] - pos_start[0]
+                    dz = pos_end[2] - pos_start[2]
+                    dist = math.sqrt(dx * dx + dz * dz)
+                else:
+                    dist = DIST_TO_START_LINE
+
+                if elapsed > 1e-9:
+                    EPUCK_MAX_WHEEL_SPEED = dist / elapsed
+                else:
+                    EPUCK_MAX_WHEEL_SPEED = 0.0
+
+                print("Elapsed time:", elapsed)
+                print("Measured speed (m/s):", EPUCK_MAX_WHEEL_SPEED)
+
+                state = "line_follower"
+
+    # ----------------------
+    # Part 2A + 2B + Part 3: line following + odometry + loop closure
+    # ----------------------
+    if state == "line_follower":
+        MAX_V = leftMotor.getMaxVelocity()
+
+        left_on = on_line(gsr[0])
+        center_on = on_line(gsr[1])
+        right_on = on_line(gsr[2])
+
+        # Part 2A control
+        TURN_SCALE = 0.45
+        if center_on:
+            vL = +MAX_V
+            vR = +MAX_V
+        elif left_on:
+            vL = -MAX_V * TURN_SCALE
+            vR = +MAX_V * TURN_SCALE
+        elif right_on:
+            vL = +MAX_V * TURN_SCALE
+            vR = -MAX_V * TURN_SCALE
+        else:
+            vL = -MAX_V * TURN_SCALE
+            vR = +MAX_V * TURN_SCALE
+
+        # Part 2B odometry
+        update_odometry(vL, vR)
+
+        # Part 3 loop closure: all three sensors on line continuously for > 0.1s
+        now = robot.getTime()
+        all_on_line = left_on and center_on and right_on
+
+        # If we're not on the line, reset "seen time" and re-arm (but cooldown still applies)
+        if not all_on_line:
+            startline_on_time = None
+            startline_armed = True
+        else:
+            if startline_on_time is None:
+                startline_on_time = now
+
+            held_long_enough = (now - startline_on_time) >= STARTLINE_HOLD_TIME
+            cooldown_ok = (now - last_reset_time) >= STARTLINE_COOLDOWN
+
+            if startline_armed and held_long_enough and cooldown_ok:
+                pose_x = 0.0
+                pose_y = 0.0
+                pose_theta = 0.0
+                last_reset_time = now
+
+                startline_armed = False  # must leave the line before we can trigger again
+
+                # DEBUG: proves loop closure is firing (comment out after you confirm!)
+                print("LOOP CLOSURE: reset pose at t=%.2f (held=%.2fs)" % (now, now - startline_on_time))
+
+    # ----------------------
+    # Part 2C: required pose print (do not change format)
+    # ----------------------
+    print("Current pose: [%5f, %5f, %5f]" % (pose_x, pose_y, pose_theta))
+
+    # Apply motor speeds
+    leftMotor.setVelocity(vL)
+    rightMotor.setVelocity(vR)
