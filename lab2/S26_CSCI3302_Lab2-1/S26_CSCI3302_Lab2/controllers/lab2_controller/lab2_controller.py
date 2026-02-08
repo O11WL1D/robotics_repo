@@ -260,6 +260,9 @@ def calculate_inf_velo_matrix(rightinf):
      
 
 
+
+
+
 #Odometry
 def update_odometry(vL, vR, delta_time):
     global pose_x, pose_y, pose_theta
@@ -281,6 +284,58 @@ def update_odometry(vL, vR, delta_time):
     pose_x += dist_center * math.cos(pose_theta)
     pose_y += dist_center * math.sin(pose_theta)
     pose_theta += delta_theta
+
+
+
+
+#                                      MATRIX MATH EXAMPLE
+# input two matrices
+mat1 = ([1, 6, 5],
+        [3 ,4, 8],
+        [2, 12, 3])
+
+mat2 = ([3, 4, 6],
+        [5, 6, 7],
+        [6,56, 7])
+
+#this is output:
+
+#[[ 63 320  83]
+#[ 77 484 102]
+# [ 84 248 117]]
+
+# This will return dot product
+res = np.dot(mat1,mat2)
+
+
+# print resulted matrix
+print(res)
+
+
+
+robotframe= ([0],
+            [0],
+            [0])
+
+
+
+
+
+
+def update_odometry2(infveloleft,infveloright):
+     1==1
+     global robotframe
+     robotframe=([(((infveloleft*EPUCK_WHEEL_RADIUS))  + ((infveloright*EPUCK_WHEEL_RADIUS) ))/(2)],
+                [0],
+                [  ((infveloright*EPUCK_WHEEL_RADIUS)  - (infveloleft*EPUCK_WHEEL_RADIUS) )/(EPUCK_AXLE_DIAMETER)  ])
+
+    # [xvelo]
+    # [0]
+    # [yvelo]
+
+
+
+
 
 
 groundthresh=330
@@ -409,8 +464,10 @@ while robot.step(SIM_TIMESTEP) != -1:
     #see brainstorm doc if confused. 
 
     delta_time = SIM_TIMESTEP / 1000.0  
-    update_odometry(leftSpeed, rightSpeed, delta_time)
-    report(1,currenttime)
+    #update_odometry(leftSpeed, rightSpeed, delta_time)
+    update_odometry2(infvelofrotleft,infvelofrotright)
+
+    report(0,currenttime)
 
 
 
