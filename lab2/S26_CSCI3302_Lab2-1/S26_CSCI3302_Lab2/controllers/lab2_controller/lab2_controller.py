@@ -153,7 +153,7 @@ def report(option, message):
         print("right_Wheel angle velo inf (rad):", infvelofrotright)
         #print("Line detected?  " + str(linedetected))
         #print("line detected count " + str(ldetectioncnt))
-        print("Robot frame: ", robotframe)
+        print("total Robot frame: ", totalrobotframe)
 
         #print("inf_time :", inf_time)
 
@@ -319,17 +319,61 @@ robotframe= ([0],
             [0])
 
 
+totalrobotframe=([0],
+                 [0],
+                [0])
+
+totalIframe=([0],
+             [0],
+             [0])
+
+
+
+
+tmatrix=([0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0])
+
+tempframe= ([0],
+            [0],
+            [0])
+
+
+theta=0
 
 
 
 def update_odometry2(infveloleft,infveloright):
      1==1
      global robotframe
+     global totalrobotframe
+     global totalIframe
+     global tempframe
+     global tmatrix
+     global theta 
+     theta = totalrobotframe[2]
+
+
+
      tempframe=([(((infveloleft*EPUCK_WHEEL_RADIUS))  + ((infveloright*EPUCK_WHEEL_RADIUS) ))/(2)],
                                                                    [0],
                    [  ((infveloright*EPUCK_WHEEL_RADIUS)  - (infveloleft*EPUCK_WHEEL_RADIUS) )/(EPUCK_AXLE_DIAMETER)  ])
 
-     robotframe=np.add(tempframe,robotframe)
+
+
+
+
+     totalrobotframe=np.add(tempframe,totalrobotframe)
+
+
+     tmatrix=([math.cos(theta), -math.sin(theta), 0],
+             [math.sin(theta), math.cos(theta), 0],
+             [0, 0, 0])
+     
+
+
+
+
 
     # [xvelo]
     # [0]
