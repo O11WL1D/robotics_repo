@@ -153,7 +153,8 @@ def report(option, message):
         print("right_Wheel angle velo inf (rad):", infvelofrotright)
         #print("Line detected?  " + str(linedetected))
         #print("line detected count " + str(ldetectioncnt))
-        print("total Robot frame: ", totalrobotframe)
+        print("total Robot frame: \n", totalrobotframe)
+        print("total I frame: \n", totalIframe)
 
         #print("inf_time :", inf_time)
 
@@ -370,6 +371,8 @@ def update_odometry2(infveloleft,infveloright):
              [math.sin(theta), math.cos(theta), 0],
              [0, 0, 0])
      
+     totalIframe=np.dot(tmatrix,tempframe)
+
 
 
 
