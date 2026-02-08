@@ -228,6 +228,8 @@ def loopclosure2():
             print("LOOP CLOSURE!!! RESETTING POSE")
             print("LOOP CLOSURE!!! RESETTING POSE")
             pose_x, pose_y, pose_theta=0,0,0
+            resetmatricies()
+
 
 
                
@@ -325,6 +327,47 @@ tempframe=np.array ([[0],
 theta=0
 
 
+def resetmatricies():
+    global robotframe
+    global totalrobotframe
+    global totalIframe
+    global tempframe
+    global tmatrix
+    global theta
+    global tempIframe
+    robotframe= np.array([[0],
+        [0],
+        [0]])
+
+
+    totalrobotframe=np.array([[0],
+                [0],
+                [0]])
+
+    totalIframe=np.array([[0],
+            [0],
+            [0]])
+
+
+    tempIframe=np.array([[0],
+            [0],
+            [0]])
+
+
+    tmatrix=np.array([[0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]])
+
+    tempframe=np.array ([[0],
+            [0],
+            [0]])
+
+
+    theta=0
+
+
+
+
 
 def update_odometry2(infveloleft,infveloright):
      1==1
@@ -420,9 +463,18 @@ while robot.step(SIM_TIMESTEP) != -1:
 
 
             if(robotsubstate==SUBSTATES.Calculate_Speed):               
-                WHEEL_RADIUS = 0.0205
+                WHEEL_RADIUS = 0.025
                 distance_left = angle_of_rotation_left_total * WHEEL_RADIUS
+                print("DISTANCE LEFT " + str(distance_left))
+
                 EPUCK_MAX_WHEEL_SPEED = distance_left / currenttime
+                print(f"Calculated Speed: {EPUCK_MAX_WHEEL_SPEED} m/s")
+                print(f"Calculated Speed: {EPUCK_MAX_WHEEL_SPEED} m/s")
+                print(f"Calculated Speed: {EPUCK_MAX_WHEEL_SPEED} m/s")
+                print(f"Calculated Speed: {EPUCK_MAX_WHEEL_SPEED} m/s")
+                print(f"Calculated Speed: {EPUCK_MAX_WHEEL_SPEED} m/s")
+                print(f"Calculated Speed: {EPUCK_MAX_WHEEL_SPEED} m/s")
+                print(f"Calculated Speed: {EPUCK_MAX_WHEEL_SPEED} m/s")
                 print(f"Calculated Speed: {EPUCK_MAX_WHEEL_SPEED} m/s")
 
                 #todo, calculate linear translation distance and store
@@ -484,25 +536,26 @@ while robot.step(SIM_TIMESTEP) != -1:
     
 
 
-            #odometry calculations.
-            angle_of_rotation_left_total = left_wheel_sensor.getValue()  # radians
-            angle_of_rotation_right_total = right_wheel_sensor.getValue()  # radians
-            diffright=find_infi_right_angle_rot(angle_of_rotation_right_total) #radians per step.
-            diffleft=find_infi_left_angle_rot(angle_of_rotation_left_total) #radians per step.
+    #odometry calculations.
+    angle_of_rotation_left_total = left_wheel_sensor.getValue()  # radians
+    angle_of_rotation_right_total = right_wheel_sensor.getValue()  # radians
+    diffright=find_infi_right_angle_rot(angle_of_rotation_right_total) #radians per step.
+    diffleft=find_infi_left_angle_rot(angle_of_rotation_left_total) #radians per step.
 
-            inf_time=find_inf_time(currenttime)
+    inf_time=find_inf_time(currenttime)
 
 
-            infvelofrotleft=calc_velocity(diffleft,inf_time)
-            infvelofrotright=calc_velocity(diffright,inf_time)
+    infvelofrotleft=calc_velocity(diffleft,inf_time)
+    infvelofrotright=calc_velocity(diffright,inf_time)
 
-            #see brainstorm doc if confused. 
+    #see brainstorm doc if confused. 
 
-            delta_time = SIM_TIMESTEP / 1000.0  
+    delta_time = SIM_TIMESTEP / 1000.0  
 
-            #update_odometry(leftSpeed, rightSpeed, delta_time)
+    #update_odometry(leftSpeed, rightSpeed, delta_time)
 
-            update_odometry2(infvelofrotleft,infvelofrotright)
+    if(ldetectioncnt):
+        update_odometry2(infvelofrotleft,infvelofrotright)
 
 
 
