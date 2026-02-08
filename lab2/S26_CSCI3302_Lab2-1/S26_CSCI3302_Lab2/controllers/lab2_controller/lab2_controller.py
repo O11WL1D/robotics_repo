@@ -342,7 +342,7 @@ def update_odometry2(infveloleft,infveloright):
 
      tempframe=np.array([[(((infveloleft*EPUCK_WHEEL_RADIUS))  + ((infveloright*EPUCK_WHEEL_RADIUS) ))/(2)],
                                                                    [0],
-                   [  ((infveloright*EPUCK_WHEEL_RADIUS)  - (infveloleft*EPUCK_WHEEL_RADIUS) )/(EPUCK_AXLE_DIAMETER)  ]])
+                   [  math.radians(((infveloright*EPUCK_WHEEL_RADIUS)  - (infveloleft*EPUCK_WHEEL_RADIUS) )/(EPUCK_AXLE_DIAMETER))  ]])
 
 
 
@@ -499,7 +499,9 @@ while robot.step(SIM_TIMESTEP) != -1:
             #see brainstorm doc if confused. 
 
             delta_time = SIM_TIMESTEP / 1000.0  
+
             #update_odometry(leftSpeed, rightSpeed, delta_time)
+
             update_odometry2(infvelofrotleft,infvelofrotright)
 
 
