@@ -379,13 +379,13 @@ def update_odometry2(infveloleft,infveloright):
      global theta
      global tempIframe  
      
-
+     correctionfactor=1.37
     
 
 
      tempframe=np.array([[(((infveloleft*EPUCK_WHEEL_RADIUS))  + ((infveloright*EPUCK_WHEEL_RADIUS) ))/(2)],
                                                                    [0],
-                   [  math.radians(((infveloright*EPUCK_WHEEL_RADIUS)  - (infveloleft*EPUCK_WHEEL_RADIUS) )/(EPUCK_AXLE_DIAMETER))  ]])
+                   [  correctionfactor*math.radians(((infveloright*EPUCK_WHEEL_RADIUS)  - (infveloleft*EPUCK_WHEEL_RADIUS) )/(EPUCK_AXLE_DIAMETER))  ]])
 
 
 
@@ -436,7 +436,7 @@ while robot.step(SIM_TIMESTEP) != -1:
     paststart=(not leftsensordetection and not centersensordetection and not rightsensordetection)
 
     rightcliff=(centersensordetection and not rightsensordetection and leftsensordetection)
-    linedetected= ((gsr[0]<groundthresh) and (gsr[2]<groundthresh) and (gsr[1]<groundthresh)) and ((theta==0) or (theta>4))
+    linedetected= ((gsr[0]<groundthresh) and (gsr[2]<groundthresh) and (gsr[1]<groundthresh)) and ((theta==0) or (theta>6))
 
     if(linedetected):
          ldetectioncnt+=1
