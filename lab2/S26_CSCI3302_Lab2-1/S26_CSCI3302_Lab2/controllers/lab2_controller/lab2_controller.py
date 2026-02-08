@@ -151,8 +151,8 @@ def report(option, message):
 
         print("left_Wheel angle velo inf (rad):", infvelofrotleft)
         print("right_Wheel angle velo inf (rad):", infvelofrotright)
-        #print("Line detected?  " + str(linedetected))
-        #print("line detected count " + str(ldetectioncnt))
+        print("Line detected?  " + str(linedetected))
+        print("line detected count " + str(ldetectioncnt))
         print("total Robot frame: \n", totalrobotframe)
         print("total I frame: \n", totalIframe)
         print("Theta " + str(theta))
@@ -436,7 +436,7 @@ while robot.step(SIM_TIMESTEP) != -1:
     paststart=(not leftsensordetection and not centersensordetection and not rightsensordetection)
 
     rightcliff=(centersensordetection and not rightsensordetection and leftsensordetection)
-    linedetected= ((gsr[0]<groundthresh) and (gsr[2]<groundthresh) and (gsr[1]<groundthresh)) and ((pose_theta==0) or (pose_theta>5))
+    linedetected= ((gsr[0]<groundthresh) and (gsr[2]<groundthresh) and (gsr[1]<groundthresh)) and ((theta==0) or (theta>4))
 
     if(linedetected):
          ldetectioncnt+=1
