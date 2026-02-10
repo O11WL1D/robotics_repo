@@ -377,7 +377,10 @@ def update_odometry2(infveloleft,infveloright):
      global tempframe
      global tmatrix
      global theta
-     global tempIframe  
+     global tempIframe
+     global pose_x
+     global pose_y
+     global pose_theta  
      
      #correction factor was calculated like this:
      # pre correction factor reported radians turned after 90 deg = 1.15
@@ -409,6 +412,7 @@ def update_odometry2(infveloleft,infveloright):
      tempIframe=np.dot(tmatrix,tempframe)
 
      totalIframe=np.add(totalIframe,tempIframe)
+     pose_x, pose_y, pose_theta=totalIframe[0][0] ,totalIframe[1][0] ,theta
 
 
 
@@ -515,7 +519,7 @@ while robot.step(SIM_TIMESTEP) != -1:
 
 
             if(rightcliff):
-                 print("RIGHT CLIFF")
+                 #print("RIGHT CLIFF")
                  robotsubstate=SUBSTATES.Left_Sensor_detects_line
 
 
@@ -565,7 +569,7 @@ while robot.step(SIM_TIMESTEP) != -1:
 
 
 
-    report(0,currenttime)
+    report(1,currenttime)
 
 
 
