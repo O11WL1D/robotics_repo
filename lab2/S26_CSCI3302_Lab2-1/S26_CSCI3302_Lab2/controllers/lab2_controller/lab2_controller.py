@@ -426,7 +426,7 @@ def update_odometry2(infveloleft,infveloright):
 
 
 
-groundthresh=330
+groundthresh=600
 groundcount=0
 currenttime=0
 
@@ -569,7 +569,7 @@ while robot.step(SIM_TIMESTEP) != -1:
 
 
 
-    report(1,currenttime)
+    report(0,currenttime)
 
 
 
@@ -678,3 +678,4 @@ while robot.step(SIM_TIMESTEP) != -1:
     rightMotor.setVelocity(rightSpeed)
 
 
+ 
