@@ -490,7 +490,14 @@ def IKrobotsolver():
     #invrobotframe=np.add(tempinvrobotframe,invrobotframe)
 
 
+    #there is some error when the robot turns 
+    #when it comes to the inverse solving, 
+    #it falsely solves for some y component of 
+    #the robot frame being higher than zero 
+    #which is impossile. 
 
+    #this likely stems from the issues we had with the 
+    #under-reporting of the angles somehow. 
 
 
 
