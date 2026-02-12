@@ -193,7 +193,11 @@ def report(option, message):
         print("line detected count " + str(ldetectioncnt))
         print("total Robot frame: \n", totalrobotframe)
         print("total I frame: \n", totalIframe)
+
+        print("Inverse solved robot frame: \n", tempinvrobotframe)
+
         print("Theta " + str(theta))
+        
 
         #print("inf_time :", inf_time)
 
@@ -327,9 +331,37 @@ tmatrix=np.array([[0, 0, 0],
         [0, 0, 0],
         [0, 0, 0]])
 
+
+
 tempframe=np.array ([[0],
             [0],
             [0]])
+
+
+
+
+
+
+
+invtmatrix=np.array([[0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]])
+
+
+
+invrobotframe= np.array([[0],
+            [0],
+            [0]])
+
+
+
+tempinvrobotframe= np.array([[0],
+            [0],
+            [0]])
+
+
+
+
 
 
 theta=0
@@ -425,11 +457,33 @@ def update_odometry2(infveloleft,infveloright):
 
 
 
-    # [xvelo]
-    # [0]
-    # [yvelo]
 
 
+def IKrobotsolver():
+
+    #old globals
+    global robotframe
+    global totalrobotframe
+    global totalIframe
+    global tempframe
+    global tmatrix
+    global theta
+    global tempIframe
+    global pose_x
+    global pose_y
+    global pose_theta  
+
+    #new globals
+    global invtmatrix
+    global invrobotframe
+    global tempinvrobotframe
+
+
+    invtmatrix=np.array([[math.cos(theta), math.sin(theta), 0],
+                         [-math.sin(theta), math.cos(theta), 0],
+                         [0, 0, 1]])
+    
+    tempinvrobotframe=np.dot(invtmatrix,totalIframe)
 
 
 
@@ -649,7 +703,10 @@ while robot.step(SIM_TIMESTEP) != -1:
 
     if(ldetectioncnt):
         update_odometry2(infvelofrotleft,infvelofrotright)
+        IKrobotsolver()
 
+
+    
 
 
     report(0,currenttime)
