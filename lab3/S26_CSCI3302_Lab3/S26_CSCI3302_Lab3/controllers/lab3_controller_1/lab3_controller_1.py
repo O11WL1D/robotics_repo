@@ -194,7 +194,8 @@ def report(option, message):
         print("total Robot frame: \n", totalrobotframe)
         print("total I frame: \n", totalIframe)
 
-        print("Inverse solved robot frame: \n", tempinvrobotframe)
+        print("temp Inverse solved robot frame: \n", tempinvrobotframe)
+        #print("full Inverse solved robot frame: \n", invrobotframe)
 
         print("Theta " + str(theta))
         
@@ -484,6 +485,9 @@ def IKrobotsolver():
                          [0, 0, 1]])
     
     tempinvrobotframe=np.dot(invtmatrix,totalIframe)
+    
+    #doesnt work that way
+    #invrobotframe=np.add(tempinvrobotframe,invrobotframe)
 
 
 
