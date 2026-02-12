@@ -54,10 +54,16 @@ index = 0
 # Get ping pong ball marker that marks the next waypoint the robot is reaching
 marker = robot.getFromDef("marker").getField("translation")
 
+
+
 # Main Control Loop:
 while robot.step(SIM_TIMESTEP) != -1:
+
+
+    print("test")
+
     # Set the position of the marker
-    marker.setSFVec3f([waypoints[index][0], waypoints[index][1], 0.01])
+    #marker.setSFVec3f([waypoints[index][0], waypoints[index][1], 0.01])
     
     # Read ground sensor values
     for i, gs in enumerate(ground_sensors):
@@ -70,6 +76,8 @@ while robot.step(SIM_TIMESTEP) != -1:
     
     # TODO: controller
     
-    print("Current pose: [%5f, %5f, %5f]" % (xr, yr, theta))
-    leftMotor.setVelocity(vL)
-    rightMotor.setVelocity(vR)
+
+
+    #print("Current pose: [%5f, %5f, %5f]" % (xr, yr, theta))
+    #leftMotor.setVelocity(vL)
+    #rightMotor.setVelocity(vR)

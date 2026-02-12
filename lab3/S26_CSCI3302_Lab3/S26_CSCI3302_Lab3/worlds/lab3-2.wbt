@@ -1,4 +1,4 @@
-#VRML_SIM R2023b utf8
+#VRML_SIM R2025a utf8
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
@@ -455,11 +455,11 @@ Solid {
   model "rectangle arena"
 }
 DEF marker PingPongBall {
-  translation -0.154705 -0.194838 0.02
+  translation -0.154705 -0.194838 0.01999558615969809
 }
 Robot {
-  translation -0.31 -0.19 -7.16246e-05
-  rotation -1.21946e-09 -1.21946e-09 1 -1.5707953071795862
+  translation -0.30999999999999983 -0.19000000009670573 -6.396956858026152e-05
+  rotation 3.9796182793002583e-10 -2.0427744997184225e-09 -0.9999999999999999 1.570795307179588
   children [
     Compass {
     }
@@ -467,7 +467,7 @@ Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -3.055206064971636e-08
+        position 4.0341128285181877e-10
         axis 0 1 0
         anchor 0 0 0.02
       }
@@ -484,7 +484,7 @@ Robot {
       ]
       endPoint DEF EPUCK_LEFT_WHEEL Solid {
         translation 0 0.026 0.02
-        rotation 0 -1 0 2.9802322387695313e-08
+        rotation 0 1 0 0
         children [
           DEF EPUCK_WHEEL Pose {
             rotation 1 0 0 -1.570796
@@ -616,11 +616,13 @@ Robot {
           density -1
           mass 0.005
         }
+        linearVelocity 1.5583768739422396e-10 -3.2597089089640105e-09 6.830312222483528e-08
+        angularVelocity 1.6299074432573666e-07 -2.5842900086453784e-10 -8.963628277964958e-14
       }
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -3.0552025052868335e-08
+        position 4.0341879161389227e-10
         axis 0 1 0
         anchor 0 0 0.02
       }
@@ -637,7 +639,7 @@ Robot {
       ]
       endPoint DEF EPUCK_RIGHT_WHEEL Solid {
         translation 0 -0.026 0.02
-        rotation 0 -1 0 2.9802322387695313e-08
+        rotation 0 1 0 0
         children [
           Pose {
             rotation 1 0 0 3.14159
@@ -649,6 +651,8 @@ Robot {
         name "right wheel"
         boundingObject USE EPUCK_WHEEL_BOUNDING_OBJECT
         physics USE EPUCK_WHEEL_PHYSICS
+        linearVelocity -1.565829584916631e-10 -3.259704943332037e-09 6.8302151978733e-08
+        angularVelocity 1.6299052890276244e-07 2.209562383338474e-10 -7.575356938106475e-14
       }
     }
     DEF BATTERY_CONNECTOR Pose {
@@ -2038,10 +2042,12 @@ Robot {
       0 0 0
     ]
   }
-  controller "lab3"
+  controller "lab3_controller_1"
   supervisor TRUE
   cpuConsumption 1.11
   remoteControl "e-puck_bluetooth"
+  linearVelocity -2.7783253851488184e-13 -3.993883205119994e-09 5.918642434229925e-08
+  angularVelocity -1.4688008836399418e-07 -1.8926508853653142e-11 -8.218308077830742e-14
 }
 Rock {
   translation 0.105394 0.251125 4.44089e-16
@@ -2050,14 +2056,15 @@ FlowerPot {
   translation 0.22993 -0.0254406 4.44089e-16
 }
 SolidBox {
-  translation 0.0984466 -0.308553 0.05
-  rotation 0 0 1 1.5708
+  translation 0.0984466 -0.308553 0.049215957572855094
+  rotation -5.115995392449559e-18 -2.216878928578274e-17 1 1.5708000000000002
   size 0.1 0.2 0.1
   physics Physics {
   }
 }
 SolidBox {
-  translation -0.315387 0.142839 0.05
+  translation -0.315387 0.142839 0.04921595757285506
+  rotation 0.8831684687233391 0.36798686196806235 -0.29085928775229225 4.634139807883302e-17
   name "box(1)"
   size 0.1 0.2 0.1
   physics Physics {
