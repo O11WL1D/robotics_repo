@@ -13,6 +13,7 @@ from controller import Robot, Motor, DistanceSensor
 # TODO: Set a reasonable threshold that separates "line detected" from "no line detected"
 GROUND_SENSOR_THRESHOLD = 0
 start_line_timer = 0.0 # Track duration for loop closure
+
 class STATES(Enum):
     speed_measurement=1
     line_follower=2
@@ -73,28 +74,6 @@ right_wheel_sensor = robot.getDevice("right wheel sensor")
 left_wheel_sensor.enable(SIM_TIMESTEP)
 right_wheel_sensor.enable(SIM_TIMESTEP)
 
-#                                      MATRIX MATH EXAMPLE
-# input two matrices
-mat1 = ([1, 6, 5],
-        [3 ,4, 8],
-        [2, 12, 3])
-
-mat2 = ([3, 4, 6],
-        [5, 6, 7],
-        [6,56, 7])
-
-#this is output:
-
-#[[ 63 320  83]
- #[ 77 484 102]
-# [ 84 248 117]]
-
-# This will return dot product
-res = np.dot(mat1,mat2)
-
-
-# print resulted matrix
-print(res)
 
 
 # Initialize and Enable the Ground Sensors
@@ -114,6 +93,8 @@ vR = 0
 
 
 
+
+
 angle_of_rotation_left_total = left_wheel_sensor.getValue()  # radians
 angle_of_rotation_right_total = right_wheel_sensor.getValue()  # radians
 
@@ -130,6 +111,8 @@ infvelofrotright=0
 inf_time=0
 
 ldetectioncnt=0
+
+
 
 # robot output function, please try to have all output go in here 
 # so that it can be customized. 
