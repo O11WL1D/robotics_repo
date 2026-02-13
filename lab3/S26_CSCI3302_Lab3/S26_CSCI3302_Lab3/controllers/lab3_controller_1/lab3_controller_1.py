@@ -470,7 +470,7 @@ def resetmatricies():
 
 
 
-def update_odometry3(infveloleft,infveloright):
+def update_odometry2(infveloleft,infveloright):
      1==1
      global robotframe
      global totalrobotframe
@@ -482,8 +482,6 @@ def update_odometry3(infveloleft,infveloright):
      global pose_x
      global pose_y
      global pose_theta  
-
-     
      
      #correction factor was calculated like this:
      # pre correction factor reported radians turned after 90 deg = 1.15
@@ -522,57 +520,6 @@ def update_odometry3(infveloleft,infveloright):
      temptheta=tempframe[2][0]
      IKanglevelosolver()
 
-
-def update_odometry2(infveloleft, infveloright):
-     global robotframe
-     global totalrobotframe
-     global totalIframe
-     global tempframe
-     global tmatrix
-     global theta
-     global tempIframe
-     global pose_x
-     global pose_y
-     global pose_theta
-     global delta_time
-
-     # --- Compute linear and angular velocity ---
-     vL = infveloleft * EPUCK_WHEEL_RADIUS
-     vR = infveloright * EPUCK_WHEEL_RADIUS
-
-     linear_velocity = (vL + vR) / 2
-     omega = (vR - vL) / EPUCK_AXLE_DIAMETER
-
-     # --- Convert velocities to displacements ---
-     delta_s = linear_velocity * delta_time
-     delta_theta = omega * delta_time
-
-     # --- Robot frame incremental motion ---
-     tempframe = np.array([
-         [delta_s],
-         [0],
-         [delta_theta]
-     ])
-
-     # --- Accumulate heading ---
-     theta = totalrobotframe[2][0] + delta_theta
-
-     # --- Rotation matrix using UPDATED theta ---
-     tmatrix = np.array([
-         [math.cos(theta), -math.sin(theta), 0],
-         [math.sin(theta),  math.cos(theta), 0],
-         [0, 0, 1]
-     ])
-
-     # --- Transform into world frame ---
-     tempIframe = np.dot(tmatrix, tempframe)
-
-     totalrobotframe = np.add(totalrobotframe, tempframe)
-     totalIframe = np.add(totalIframe, tempIframe)
-
-     pose_x = totalIframe[0][0]
-     pose_y = totalIframe[1][0]
-     pose_theta = theta
 
 
 
