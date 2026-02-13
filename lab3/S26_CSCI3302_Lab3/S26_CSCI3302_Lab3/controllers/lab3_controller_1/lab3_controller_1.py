@@ -1,23 +1,6 @@
 """line_following_with_localizationpy controller."""
 
-# This program implements a state-machine based line-following behavior
-# with a template for odometry-based localization for the e-puck robot.
 
-# This code was tested on Webots R2022a, on Windows 10 running
-# Python 3.9.7 64-bit
-
-# The encoder values are incremented when the corresponding wheel moves
-# forwards, and decremented when it moves backwards.
-# Encoder is simulated by reading angular position of the wheels, in radians
-
-# Author: Felipe N. Martins
-# Date: 13th of April, 2020
-# Update: 17 September 2021 - add comments and adjust variable names
-# Update: 03 March 2022 - change the coordinate system to ENU to match the default of Webots R2022a
-
-from controller import Robot, DistanceSensor, Motor
-import numpy as np
-import math
 
 import math
 import numpy as np
@@ -38,13 +21,7 @@ robot = Robot()
 timestep = int(robot.getBasicTimeStep())   # [ms]
 delta_t = timestep/1000.0    # [s]
 
-# states
-states = ['forward', 'turn_right', 'turn_left']
-current_state = states[0]
 
-# counter: used to maintain an active state for a number of cycles
-counter = 0
-COUNTER_MAX = 3
 
 # Robot pose
 # Adjust the initial values to match the initial robot pose in your simulation
@@ -58,6 +35,7 @@ dy = 0.0   # speed in y [m/s]
 ddx = 0.0  # acceleration in x [m/s^2]
 ddy = 0.0  # acceleration in y [m/s^2]
 
+
 # Robot wheel speeds
 wl = 0.0    # angular speed of the left wheel [rad/s]
 wr = 0.0    # angular speed of the right wheel [rad/s]
@@ -66,13 +44,17 @@ wr = 0.0    # angular speed of the right wheel [rad/s]
 u = 0.0    # linear speed [m/s]
 w = 0.0    # angular speed [rad/s]
 
+
 # e-puck Physical parameters for the kinematics model (constants)
 R = 0.020    # radius of the wheels: 20.5mm [m]
 D = 0.057    # distance between the wheels: 52mm [m]
 # distance from the center of the wheels to the point of interest [m]
 A = 0.05
 
+
 # -------------------------------------------------------
+
+
 # Initialize devices
 
 # distance sensors
@@ -124,6 +106,8 @@ def get_wheels_speed(encoderValues, oldEncoderValues, pulses_per_turn, delta_t):
     wr = ang_diff_r/delta_t
 
     return wl, wr
+
+
 
 
 def get_robot_speeds(wl, wr, R, D):
@@ -218,6 +202,8 @@ class SUBSTATES(Enum):
 robotstate=STATES.speed_measurement
 robotsubstate=SUBSTATES.Drive_Forward
 
+
+
 # Initialize and Enable the Ground Sensors
 gsr = [0, 0, 0]
 ground_sensors = [robot.getDevice('gs0'), robot.getDevice(
@@ -243,6 +229,37 @@ vR = 0
 
 
 
+def report(option, message):
+  
+    if(option==0):
+        print("CURRENT ROBOT STATE:  " + str(robotstate)+ "  CURRENT ROBOT SUBSTATE:    " + str(robotsubstate)) 
+        
+        print("GROUND SENSOR VALUES: " + str(gsr))
+        print("ELAPSED TIME: " + str(currenttime)) 
+        print("Left detection? : " + str(leftsensordetection) + " center detection? " + str(centersensordetection) + " right detection? " + str(rightsensordetection)) 
+        print(message)
+        
+        print(
+        f'Sim time: {robot.getTime():.3f}  Pose: x={x:.2f} m, y={y:.2f} m, phi={phi:.4f} rad.')
+   
+        print("left_Wheel angle inf (rad):", diffleft)
+        print("right_Wheel angle inf (rad):", diffright)
+
+        print("left_Wheel angle velo inf (rad):", infvelofrotleft)
+        print("right_Wheel angle velo inf (rad):", infvelofrotright)
+        print("Line detected?  " + str(linedetected))
+        print("line detected count " + str(ldetectioncnt))
+        #print("total Robot frame: \n", totalrobotframe)
+        #print("total I frame: \n", totalIframe)
+        #print("Theta " + str(theta))
+
+        #print("inf_time :", inf_time)
+
+    if(option==1):
+           print(
+        f'Sim time: {robot.getTime():.3f}  Pose: x={x:.2f} m, y={y:.2f} m, phi={phi:.4f} rad.')
+      
+         
 
 
 
@@ -387,6 +404,10 @@ while robot.step(timestep) != -1:
     rightcliff=(centersensordetection and not rightsensordetection and leftsensordetection)
     linedetected= ((gsr[0]<groundthresh) and (gsr[2]<groundthresh) and (gsr[1]<groundthresh)) 
 
+    offtrack=(not leftsensordetection and not centersensordetection and not rightsensordetection)
+
+
+
     if(linedetected):
          ldetectioncnt+=1
 
@@ -445,9 +466,15 @@ while robot.step(timestep) != -1:
 
 
 
+
             if(rightcliff):
                  #print("RIGHT CLIFF")
                  robotsubstate=SUBSTATES.Left_Sensor_detects_line
+
+
+            if(offtrack):
+                robotsubstate=SUBSTATES.Left_Sensor_detects_line
+
 
 
                 
@@ -458,7 +485,7 @@ while robot.step(timestep) != -1:
 
             else:
                 
-                rotamt=0.05
+                rotamt=0.01
 
                 if(robotsubstate==SUBSTATES.Left_Sensor_detects_line):
                     leftSpeed  = -MAX_SPEED*rotamt 
@@ -468,9 +495,6 @@ while robot.step(timestep) != -1:
                 if(robotsubstate==SUBSTATES.Right_Sensor_detects_line):
                     leftSpeed  = MAX_SPEED*rotamt
                     rightSpeed = -MAX_SPEED*rotamt
-             
-                    
-    
 
 
 
@@ -496,13 +520,11 @@ while robot.step(timestep) != -1:
 
 
 
-    # increment counter
-    counter += 1
 
     # To help on debugging:
-    print(
-        f'Sim time: {robot.getTime():.3f}  Pose: x={x:.2f} m, y={y:.2f} m, phi={phi:.4f} rad.')
 
+    
+    report(1, 0)
 
     ############################################
     #                  Act                     #
