@@ -107,6 +107,31 @@ marker = robot.getFromDef("marker").getField("translation")
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class STATES(Enum):
     speed_measurement=1
     line_follower=2
@@ -198,6 +223,7 @@ def report(option, message):
         #print("full Inverse solved robot frame: \n", invrobotframe)
 
         print("Theta " + str(theta))
+
         
 
         #print("inf_time :", inf_time)
@@ -206,6 +232,33 @@ def report(option, message):
          print("Current pose: [%5f, %5f, %5f]" % (pose_x, pose_y, pose_theta))
          
 
+    #inv kinematics troubleshoot
+    if(option==2):
+        print("CURRENT ROBOT STATE:  " + str(robotstate)+ "  CURRENT ROBOT SUBSTATE:    " + str(robotsubstate)) 
+        print("Current pose: [%5f, %5f, %5f]" % (pose_x, pose_y, pose_theta))
+        
+
+        
+        print("left_Wheel angle (rad):", angle_of_rotation_left_total)
+        print("right_Wheel angle (rad):", angle_of_rotation_right_total)
+
+        print("left_Wheel angle inf (rad):", diffleft)
+        print("right_Wheel angle inf (rad):", diffright)
+
+        print("left_Wheel angle velo inf (rad):", infvelofrotleft)
+        print("right_Wheel angle velo inf (rad):", infvelofrotright)
+  
+        print("total Robot frame: \n", totalrobotframe)
+        print("total I frame: \n", totalIframe)
+
+        print("temp Inverse solved robot frame: \n", tempinvrobotframe)
+        #print("full Inverse solved robot frame: \n", invrobotframe)
+
+        print("Theta " + str(theta))
+
+        print("Temp angle velos" + str(invangleveloframe))
+        
+        
 
 
 
@@ -372,6 +425,8 @@ invangleveloframe= np.array([[0],
 
 theta=0
 
+temptheta=0
+
 
 def resetmatricies():
     global robotframe
@@ -460,6 +515,13 @@ def update_odometry2(infveloleft,infveloright):
      totalIframe=np.add(totalIframe,tempIframe)
      pose_x, pose_y, pose_theta=totalIframe[0][0] ,totalIframe[1][0] ,theta
 
+     #now time to check if inverse kinematics works on temp frames. 
+
+     temptheta=tempframe[2][0]
+     IKanglevelosolver()
+
+
+
 
 
 
@@ -540,13 +602,15 @@ def IKanglevelosolver():
     global invrobotframe
     global tempinvrobotframe
     global invangleveloframe
+    global temptheta
 
 
-    invtmatrix=np.array([[math.cos(theta), math.sin(theta), 0],
-                         [-math.sin(theta), math.cos(theta), 0],
+    invtmatrix=np.array([[math.cos(temptheta), math.sin(temptheta), 0],
+                         [-math.sin(temptheta), math.cos(temptheta), 0],
                          [0, 0, 1]])
     
-    tempinvrobotframe=np.dot(invtmatrix,totalIframe)
+
+    tempinvrobotframe=np.dot(invtmatrix,tempIframe)
 
 
     xrvelo=tempinvrobotframe[0][0]
@@ -558,7 +622,11 @@ def IKanglevelosolver():
 
 
 
+
+
 def rotvelosolver(xrvelo,anglevelo):
+
+    global invangleveloframe
 
     rotleft=((xrvelo-((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
     rotright=((xrvelo+((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
@@ -566,6 +634,51 @@ def rotvelosolver(xrvelo,anglevelo):
     invangleveloframe= np.array([[rotleft],
             [rotright]])
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -768,13 +881,13 @@ while robot.step(SIM_TIMESTEP) != -1:
 
     if(ldetectioncnt):
         update_odometry2(infvelofrotleft,infvelofrotright)
-        IKrobotsolver()
+        #IKrobotsolver()
 
 
     
 
 
-    report(0,currenttime)
+    report(2,currenttime)
 
 
 
