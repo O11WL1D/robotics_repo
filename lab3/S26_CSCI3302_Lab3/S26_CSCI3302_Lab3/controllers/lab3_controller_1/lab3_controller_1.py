@@ -17,6 +17,14 @@
 
 from controller import Robot, DistanceSensor, Motor
 import numpy as np
+import math
+
+import math
+import numpy as np
+from enum import Enum
+from controller import Robot, Motor, DistanceSensor
+
+
 
 # -------------------------------------------------------
 # Initialize variables
@@ -118,25 +126,163 @@ def get_wheels_speed(encoderValues, oldEncoderValues, pulses_per_turn, delta_t):
     return wl, wr
 
 
-def get_robot_speeds(wl, wr, r, d):
-    """Computes robot linear and angular speeds"""
-  # ********************************************************
-  # *************** WRITE YOUR CODE HERE *******************
-  # ********************************************************
+def get_robot_speeds(wl, wr, R, D):
+    u = R/2.0 * (wr + wl)
+    w = R/D * (wr - wl)
+    
+    return u, w
 
 
 def get_robot_pose(u, w, x_old, y_old, phi_old, delta_t):
     """Updates robot pose based on heading and linear and angular speeds"""
-  # ********************************************************
-  # *************** WRITE YOUR CODE HERE *******************
-  # ********************************************************
+    delta_phi = w * delta_t
+    phi = phi_old + delta_phi
+    
+    if phi >= np.pi:
+        phi = phi - 2*np.pi
+    elif phi < -np.pi:
+        phi = phi + 2*np.pi
 
+    delta_x = u * np.cos(phi) * delta_t
+    delta_y = u * np.sin(phi) * delta_t
+    x = x_old + delta_x
+    y = y_old + delta_y
+    
+    return x, y, phi
 
 # -------------------------------------------------------
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
 
+
+
+
+
+
+
+
+SIM_TIMESTEP = int(robot.getBasicTimeStep())
+
+
+
+
+
+prevleft=0
+prevright=0
+prevtime=0
+
+diffleft=0
+diffright=0
+
+infvelofrotleft=0
+infvelofrotright=0
+
+inf_time=0
+
+ldetectioncnt=0
+
+
+
+
+
+
+
+
+groundthresh=600
+groundcount=0
+currenttime=0
+
+
+
+
+
+
+class STATES(Enum):
+    speed_measurement=1
+    line_follower=2
+
+
+
+class SUBSTATES(Enum):
+    Drive_Forward=1
+    Start_Line_Detection=2
+    Stop=3
+    Calculate_Speed=4
+    #line follower state sub states
+    Center_Sensor_detects_line=5
+    Left_Sensor_detects_line=6
+    Right_Sensor_detects_line=7
+    No_Sensors_Detect_Line=8
+
+
+robotstate=STATES.speed_measurement
+robotsubstate=SUBSTATES.Drive_Forward
+
+# Initialize and Enable the Ground Sensors
+gsr = [0, 0, 0]
+ground_sensors = [robot.getDevice('gs0'), robot.getDevice(
+    'gs1'), robot.getDevice('gs2')]
+for gs in ground_sensors:
+    gs.enable(SIM_TIMESTEP)
+
+# Allow sensors to properly initialize
+for i in range(10):
+    robot.step(SIM_TIMESTEP)
+
+# Initialize variable for left and right speed
+vL = 0
+vR = 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 while robot.step(timestep) != -1:
+
+    print("TEST")
 
     ############################################
     #                  See                     #
@@ -147,9 +293,7 @@ while robot.step(timestep) != -1:
     for i in range(8):
         psValues.append(ps[i].getValue())
 
-    gsValues = []
-    for i in range(3):
-        gsValues.append(gs[i].getValue())
+
 
     encoderValues = []
     for i in range(2):
@@ -160,15 +304,14 @@ while robot.step(timestep) != -1:
         for i in range(2):
             oldEncoderValues.append(encoder[i].getValue())
 
-    # Process sensor data
-    line_right = gsValues[0] > 600
-    line_left = gsValues[2] > 600
+
+
 
     # --------- Robot Localization ------------
     # Using the equations for the robot kinematics based on speed
     # Compute speed of the wheels
 
-    [wl, wr] = get_wheels_speed(encoderValues, oldEncoderValues, delta_t)
+    [wl, wr] = get_wheels_speed(encoderValues, oldEncoderValues, 2 * math.pi, delta_t)
 
     
     # update old encoder values for the next cycle
@@ -183,37 +326,175 @@ while robot.step(timestep) != -1:
     #                 Think                    #
     ############################################
 
-    # Implement the line-following state machine
-    if current_state == 'forward':
-        # Action for the current state: update speed variables
-        leftSpeed = MAX_SPEED
-        rightSpeed = MAX_SPEED
 
-        # check if it is necessary to update current_state
-        if line_right and not line_left:
-            current_state = 'turn_right'
-            counter = 0
-        elif line_left and not line_right:
-            current_state = 'turn_left'
-            counter = 0
 
-    if current_state == 'turn_right':
-        # Action for the current state: update speed variables
-        leftSpeed = 0.8 * MAX_SPEED
-        rightSpeed = 0.4 * MAX_SPEED
 
-        # check if it is necessary to update current_state
-        if counter == COUNTER_MAX:
-            current_state = 'forward'
 
-    if current_state == 'turn_left':
-        # Action for the current state: update speed variables
-        leftSpeed = 0.4 * MAX_SPEED
-        rightSpeed = 0.8 * MAX_SPEED
+    # Read ground sensor values
+    for i, gs in enumerate(ground_sensors):
+        gsr[i] = gs.getValue()
 
-        # check if it is necessary to update current_state
-        if counter == COUNTER_MAX:
-            current_state = 'forward'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    leftsensordetection=(gsr[0]<groundthresh)
+    centersensordetection=(gsr[1]<groundthresh)
+    rightsensordetection=(gsr[2]<groundthresh)
+    paststart=(not leftsensordetection and not centersensordetection and not rightsensordetection)
+
+    rightcliff=(centersensordetection and not rightsensordetection and leftsensordetection)
+    linedetected= ((gsr[0]<groundthresh) and (gsr[2]<groundthresh) and (gsr[1]<groundthresh)) 
+
+    if(linedetected):
+         ldetectioncnt+=1
+
+    if(robotstate==STATES.speed_measurement):
+            1==1
+
+
+            if(robotsubstate==SUBSTATES.Drive_Forward):
+                leftSpeed  =  MAX_SPEED
+                rightSpeed = MAX_SPEED
+                
+
+                if(linedetected):
+                    robotsubstate=SUBSTATES.Stop
+                    
+                    
+
+            if(robotsubstate==SUBSTATES.Stop):
+                leftSpeed  =  0
+                rightSpeed = 0
+                robotsubstate=SUBSTATES.Calculate_Speed
+
+
+
+            if(robotsubstate==SUBSTATES.Calculate_Speed):               
+                
+
+                #todo, calculate linear translation distance and store
+                #in the var EPUCK_MAX_WHEEL_SPEED
+                #This allows you to utilize speed in m/s for future calculations without measuring wheel diameter.
+
+                robotstate=STATES.line_follower
+                robotsubstate=SUBSTATES.Center_Sensor_detects_line
+            
+            
+
+
+
+
+    if(robotstate==STATES.line_follower):
+
+
+            #loopclosure()
+            #loopclosure2()
+
+
+            if(leftsensordetection):
+                 robotsubstate=SUBSTATES.Left_Sensor_detects_line
+
+
+            if(rightsensordetection):
+                 robotsubstate=SUBSTATES.Right_Sensor_detects_line
+
+            if(centersensordetection):
+                 robotsubstate=SUBSTATES.Center_Sensor_detects_line
+
+
+
+            if(rightcliff):
+                 #print("RIGHT CLIFF")
+                 robotsubstate=SUBSTATES.Left_Sensor_detects_line
+
+
+                
+
+            if(robotsubstate==SUBSTATES.Center_Sensor_detects_line):
+                leftSpeed  =  MAX_SPEED
+                rightSpeed = MAX_SPEED
+
+            else:
+                
+                rotamt=0.05
+
+                if(robotsubstate==SUBSTATES.Left_Sensor_detects_line):
+                    leftSpeed  = -MAX_SPEED*rotamt 
+                    rightSpeed = MAX_SPEED*rotamt
+
+
+                if(robotsubstate==SUBSTATES.Right_Sensor_detects_line):
+                    leftSpeed  = MAX_SPEED*rotamt
+                    rightSpeed = -MAX_SPEED*rotamt
+             
+                    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # increment counter
     counter += 1
