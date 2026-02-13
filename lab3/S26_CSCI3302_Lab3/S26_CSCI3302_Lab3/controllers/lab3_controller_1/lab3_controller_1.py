@@ -361,6 +361,11 @@ tempinvrobotframe= np.array([[0],
             [0]])
 
 
+#top is left,
+#bottom is right.
+invangleveloframe= np.array([[0],
+            [0]])
+
 
 
 
@@ -478,6 +483,7 @@ def IKrobotsolver():
     global invtmatrix
     global invrobotframe
     global tempinvrobotframe
+    global invangleveloframe
 
 
     invtmatrix=np.array([[math.cos(theta), math.sin(theta), 0],
@@ -485,6 +491,19 @@ def IKrobotsolver():
                          [0, 0, 1]])
     
     tempinvrobotframe=np.dot(invtmatrix,totalIframe)
+
+
+    xrvelo=tempinvrobotframe[0][0]
+    anglevelo=tempinvrobotframe[2][0]
+
+
+    rotleft=((xrvelo- ((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
+    rotright=((xrvelo+ ((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
+
+
+
+
+
     
     #doesnt work that way
     #invrobotframe=np.add(tempinvrobotframe,invrobotframe)
@@ -497,8 +516,7 @@ def IKrobotsolver():
     #which is impossile. 
 
     #this likely stems from the issues we had with the 
-    #under-reporting of the angles somehow. 
-
+    #under-reporting of the angles
 
 
 
