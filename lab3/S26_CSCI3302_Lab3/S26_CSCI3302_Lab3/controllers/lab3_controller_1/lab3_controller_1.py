@@ -493,14 +493,6 @@ def IKrobotsolver():
     tempinvrobotframe=np.dot(invtmatrix,totalIframe)
 
 
-    xrvelo=tempinvrobotframe[0][0]
-    anglevelo=tempinvrobotframe[2][0]
-
-
-    rotleft=((xrvelo- ((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
-    rotright=((xrvelo+ ((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
-
-
 
 
 
@@ -527,6 +519,45 @@ def IKrobotsolver():
 
 
 
+
+
+def IKanglevelosolver():
+
+    #old globals
+    global robotframe
+    global totalrobotframe
+    global totalIframe
+    global tempframe
+    global tmatrix
+    global theta
+    global tempIframe
+    global pose_x
+    global pose_y
+    global pose_theta  
+
+    #new globals
+    global invtmatrix
+    global invrobotframe
+    global tempinvrobotframe
+    global invangleveloframe
+
+
+    invtmatrix=np.array([[math.cos(theta), math.sin(theta), 0],
+                         [-math.sin(theta), math.cos(theta), 0],
+                         [0, 0, 1]])
+    
+    tempinvrobotframe=np.dot(invtmatrix,totalIframe)
+
+
+    xrvelo=tempinvrobotframe[0][0]
+    anglevelo=tempinvrobotframe[2][0]
+
+
+    rotleft=((xrvelo-((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
+    rotright=((xrvelo+((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
+
+    invangleveloframe= np.array([[rotleft],
+            [rotright]])
 
 
 
