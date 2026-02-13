@@ -553,15 +553,19 @@ def IKanglevelosolver():
     anglevelo=tempinvrobotframe[2][0]
 
 
+    rotvelosolver(xrvelo,anglevelo)
+
+
+
+
+def rotvelosolver(xrvelo,anglevelo):
+
     rotleft=((xrvelo-((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
     rotright=((xrvelo+((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
 
     invangleveloframe= np.array([[rotleft],
             [rotright]])
-
-
-
-
+    
 
 
 
