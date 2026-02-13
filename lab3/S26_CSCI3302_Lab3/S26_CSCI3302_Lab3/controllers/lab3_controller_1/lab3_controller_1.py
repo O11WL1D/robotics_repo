@@ -748,6 +748,9 @@ currenttime=0
 # Main Control Loop:
 while robot.step(SIM_TIMESTEP) != -1:
 
+    delta_time = SIM_TIMESTEP / 1000.0  
+
+
     currenttime = robot.getTime()
   
     # Read ground sensor values
@@ -870,13 +873,10 @@ while robot.step(SIM_TIMESTEP) != -1:
     inf_time=find_inf_time(currenttime)
 
 
-    infvelofrotleft=calc_velocity(diffleft,inf_time)
-    infvelofrotright=calc_velocity(diffright,inf_time)
+    infvelofrotleft=calc_velocity(diffleft,delta_time)
+    infvelofrotright=calc_velocity(diffright,delta_time)
 
-    #see brainstorm doc if confused. 
-
-    delta_time = SIM_TIMESTEP / 1000.0  
-
+ 
     #update_odometry(leftSpeed, rightSpeed, delta_time)
 
     if(ldetectioncnt):
