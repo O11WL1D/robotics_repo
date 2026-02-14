@@ -359,6 +359,7 @@ temptheta=0
 
 
 
+
 def update_matrix(u, w, x_old, y_old, phi_old, delta_t):
 
     global totalIframe
@@ -366,10 +367,15 @@ def update_matrix(u, w, x_old, y_old, phi_old, delta_t):
     # --- 1. Compute new heading ---
     phi_new = phi_old + w * delta_t
 
+
+
     if phi_new >= np.pi:
         phi_new -= 2 * np.pi
     elif phi_new < -np.pi:
         phi_new += 2 * np.pi
+
+
+
 
     # --- 2. Build current world pose matrix T_k ---
     T_k = np.array([
@@ -378,6 +384,8 @@ def update_matrix(u, w, x_old, y_old, phi_old, delta_t):
         [0,                0,               1]
     ])
 
+
+
     # --- 3. Motion in robot frame (incremental motion) ---
     dT = np.array([
         [np.cos(w * delta_t), -np.sin(w * delta_t), u * delta_t],
@@ -385,8 +393,26 @@ def update_matrix(u, w, x_old, y_old, phi_old, delta_t):
         [0,                    0,                   1]
     ])
 
+
+
     # --- 4. Compose transformations ---
     T_new = np.dot(T_k, dT)
+
+
+
+
+    #this is another method of doing things, 
+    #this basically just does the math outlined in lecture 3,
+    #but multiplied by dt. 
+
+
+    #print("x value: " + str(x_old + u*np.cos(phi_new)*delta_t) )
+    #print("x value: " + str(x_old + u*np.cos(phi_old)*delta_t) )
+    #print("y value: " + str(y_old + u*np.sin(phi_old)*delta_t) )
+    #print("y value: " + str(y_old + u*np.sin(phi_new)*delta_t) )
+
+    print("theta val " + str(phi_old +  w * delta_t))
+    
 
     # --- 5. Extract new pose ---
     x_new = T_new[0, 2]
