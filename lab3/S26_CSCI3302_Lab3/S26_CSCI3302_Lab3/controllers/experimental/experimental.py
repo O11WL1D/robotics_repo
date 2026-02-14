@@ -254,11 +254,13 @@ def report(option, message):
         print("right_Wheel angle velo inf (rad):", infvelofrotright)
         print("Line detected?  " + str(linedetected))
         print("line detected count " + str(ldetectioncnt))
+        print("temp Robot frame: \n", tempframe)
         print("total Robot frame: \n", totalrobotframe)
         print("total I frame: \n", totalIframe)
 
         print(
         f'Sim time: {robot.getTime():.3f}  Pose: x={x:.2f} m, y={y:.2f} m, phi={phi:.4f} rad.')
+        print("CURRENT U AND W VALUES: " + str(u) + " " + str(w))
 
         #print("Theta " + str(theta))
 
@@ -359,47 +361,43 @@ temptheta=0
 
 def update_matrix(u, w, x_old, y_old, phi_old, delta_t):
 
-
-    global robotframe
-    global totalrobotframe
     global totalIframe
-    global tempframe
-    global tmatrix
-    global theta
-    global tempIframe
-    global pose_x
-    global pose_y
-    global pose_theta  
 
-    #new globals
-    global invtmatrix
-    global invrobotframe
-    global tempinvrobotframe
-    global invangleveloframe
+    # --- 1. Compute new heading ---
+    phi_new = phi_old + w * delta_t
 
-    tempframe=np.array([[u*delta_t],
-                        [0],
-                        [w*delta_t]])
-    
+    if phi_new >= np.pi:
+        phi_new -= 2 * np.pi
+    elif phi_new < -np.pi:
+        phi_new += 2 * np.pi
 
-    
-    theta = totalrobotframe[2][0]
+    # --- 2. Build current world pose matrix T_k ---
+    T_k = np.array([
+        [np.cos(phi_old), -np.sin(phi_old), x_old],
+        [np.sin(phi_old),  np.cos(phi_old), y_old],
+        [0,                0,               1]
+    ])
 
-    
-    totalrobotframe=np.add(tempframe,totalrobotframe)
+    # --- 3. Motion in robot frame (incremental motion) ---
+    dT = np.array([
+        [np.cos(w * delta_t), -np.sin(w * delta_t), u * delta_t],
+        [np.sin(w * delta_t),  np.cos(w * delta_t), 0],
+        [0,                    0,                   1]
+    ])
 
+    # --- 4. Compose transformations ---
+    T_new = np.dot(T_k, dT)
 
+    # --- 5. Extract new pose ---
+    x_new = T_new[0, 2]
+    y_new = T_new[1, 2]
+    phi_new = np.arctan2(T_new[1, 0], T_new[0, 0])
 
-    tmatrix=np.array([[math.cos(theta), -math.sin(theta), 0],
-                    [math.sin(theta), math.cos(theta), 0],
-                    [0, 0, 1]])
-    
-
-
-
-    tempIframe=np.dot(tmatrix,tempframe)
-
-    totalIframe=np.add(totalIframe,tempIframe)
+    totalIframe = np.array([
+        [x_new],
+        [y_new],
+        [phi_new]
+    ])
 
 
 
@@ -459,6 +457,7 @@ while robot.step(timestep) != -1:
     oldEncoderValues = encoderValues
     # Compute robot linear and angular speeds
     [u, w] = get_robot_speeds(wl, wr, R, D)
+
     # Compute new robot pose
     [x, y, phi] = get_robot_pose(u, w, x, y, phi, delta_t)
 
