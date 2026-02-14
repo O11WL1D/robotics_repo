@@ -254,8 +254,12 @@ def report(option, message):
         print("right_Wheel angle velo inf (rad):", infvelofrotright)
         print("Line detected?  " + str(linedetected))
         print("line detected count " + str(ldetectioncnt))
-        #print("total Robot frame: \n", totalrobotframe)
-        #print("total I frame: \n", totalIframe)
+        print("total Robot frame: \n", totalrobotframe)
+        print("total I frame: \n", totalIframe)
+
+        print(
+        f'Sim time: {robot.getTime():.3f}  Pose: x={x:.2f} m, y={y:.2f} m, phi={phi:.4f} rad.')
+
         #print("Theta " + str(theta))
 
         #print("inf_time :", inf_time)
@@ -373,15 +377,29 @@ def update_matrix(u, w, x_old, y_old, phi_old, delta_t):
     global tempinvrobotframe
     global invangleveloframe
 
-    tempframe=np.array([[u],
-                                                                   [0],
-                   [w]])
+    tempframe=np.array([[u*delta_t],
+                        [0],
+                        [w*delta_t]])
+    
+
+    
+    theta = totalrobotframe[2][0]
+
+    
+    totalrobotframe=np.add(tempframe,totalrobotframe)
 
 
 
+    tmatrix=np.array([[math.cos(theta), -math.sin(theta), 0],
+                    [math.sin(theta), math.cos(theta), 0],
+                    [0, 0, 1]])
+    
 
 
 
+    tempIframe=np.dot(tmatrix,tempframe)
+
+    totalIframe=np.add(totalIframe,tempIframe)
 
 
 
@@ -637,7 +655,7 @@ while robot.step(timestep) != -1:
     # To help on debugging:
 
     
-    report(1, 0)
+    report(0, 0)
 
     ############################################
     #                  Act                     #

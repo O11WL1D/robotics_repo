@@ -616,8 +616,6 @@ Robot {
           density -1
           mass 0.005
         }
-        linearVelocity 1.5583768739422396e-10 -3.2597089089640105e-09 6.830312222483528e-08
-        angularVelocity 1.6299074432573666e-07 -2.5842900086453784e-10 -8.963628277964958e-14
       }
     }
     HingeJoint {
@@ -651,8 +649,6 @@ Robot {
         name "right wheel"
         boundingObject USE EPUCK_WHEEL_BOUNDING_OBJECT
         physics USE EPUCK_WHEEL_PHYSICS
-        linearVelocity -1.565829584916631e-10 -3.259704943332037e-09 6.8302151978733e-08
-        angularVelocity 1.6299052890276244e-07 2.209562383338474e-10 -7.575356938106475e-14
       }
     }
     DEF BATTERY_CONNECTOR Pose {
@@ -2042,7 +2038,7 @@ Robot {
       0 0 0
     ]
   }
-  controller "lab3_controller_1"
+  controller "experimental"
   supervisor TRUE
   cpuConsumption 1.11
   remoteControl "e-puck_bluetooth"
