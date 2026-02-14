@@ -272,6 +272,44 @@ def report(option, message):
       
          
 
+    if(option==2):
+        print("CURRENT ROBOT STATE:  " + str(robotstate)+ "  CURRENT ROBOT SUBSTATE:    " + str(robotsubstate)) 
+        
+        print("GROUND SENSOR VALUES: " + str(gsr))
+        print("ELAPSED TIME: " + str(currenttime)) 
+        print("Left detection? : " + str(leftsensordetection) + " center detection? " + str(centersensordetection) + " right detection? " + str(rightsensordetection)) 
+        print(message)
+        
+        print(
+        f'Sim time: {robot.getTime():.3f}  Pose: x={x:.2f} m, y={y:.2f} m, phi={phi:.4f} rad.')
+   
+        print("left_Wheel angle inf (rad):", diffleft)
+        print("right_Wheel angle inf (rad):", diffright)
+
+        print("left_Wheel angle velo inf (rad):", infvelofrotleft)
+        print("right_Wheel angle velo inf (rad):", infvelofrotright)
+        print("Line detected?  " + str(linedetected))
+        print("line detected count " + str(ldetectioncnt))
+        print("temp Robot frame: \n", tempframe)
+        print("total Robot frame: \n", totalrobotframe)
+        print("total I frame: \n", totalIframe)
+
+        print(
+        f'Sim time: {robot.getTime():.3f}  Pose: x={x:.2f} m, y={y:.2f} m, phi={phi:.4f} rad.')
+        print("CURRENT U AND W VALUES: " + str(u) + " " + str(w))
+
+        #print("Theta " + str(theta))
+
+        #print("inf_time :", inf_time)
+        
+        print("temp Inverse solved robot frame: \n", tempinvrobotframe)
+        #print("full Inverse solved robot frame: \n", invrobotframe)
+
+        print("Theta " + str(theta))
+
+        print("Temp angle velos" + str(invangleveloframe))
+        
+
 
 
 
@@ -425,6 +463,8 @@ def update_matrix(u, w, x_old, y_old, phi_old, delta_t):
         [phi_new]
     ])
 
+    IKrobotsolver()
+
 
 
     
@@ -533,8 +573,8 @@ def rotvelosolver(xrvelo,anglevelo):
 
     global invangleveloframe
 
-    rotleft=((xrvelo-((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
-    rotright=((xrvelo+((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
+    rotleft=((xrvelo-((anglevelo*D)/2)))/R
+    rotright=((xrvelo+((anglevelo*D)/2)))/R
 
     invangleveloframe= np.array([[rotleft],
             [rotright]])
@@ -853,7 +893,7 @@ while robot.step(timestep) != -1:
     # To help on debugging:
 
     
-    report(0, 0)
+    report(2, 0)
 
     ############################################
     #                  Act                     #
