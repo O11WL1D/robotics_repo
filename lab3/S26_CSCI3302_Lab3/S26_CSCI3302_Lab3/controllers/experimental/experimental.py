@@ -411,7 +411,7 @@ def update_matrix(u, w, x_old, y_old, phi_old, delta_t):
     #print("y value: " + str(y_old + u*np.sin(phi_old)*delta_t) )
     #print("y value: " + str(y_old + u*np.sin(phi_new)*delta_t) )
 
-    print("theta val " + str(phi_old +  w * delta_t))
+    #print("theta val " + str(phi_old +  w * delta_t))
     
 
     # --- 5. Extract new pose ---
@@ -424,6 +424,221 @@ def update_matrix(u, w, x_old, y_old, phi_old, delta_t):
         [y_new],
         [phi_new]
     ])
+
+
+
+    
+
+
+
+
+def IKrobotsolver():
+
+    #old globals
+    global robotframe
+    global totalrobotframe
+    global totalIframe
+    global tempframe
+    global tmatrix
+    global theta
+    global tempIframe
+    global pose_x
+    global pose_y
+    global pose_theta  
+
+    #new globals
+    global invtmatrix
+    global invrobotframe
+    global tempinvrobotframe
+    global invangleveloframe
+
+
+    invtmatrix=np.array([[math.cos(theta), math.sin(theta), 0],
+                         [-math.sin(theta), math.cos(theta), 0],
+                         [0, 0, 1]])
+    
+    tempinvrobotframe=np.dot(invtmatrix,totalIframe)
+
+
+
+
+
+    
+    #doesnt work that way
+    #invrobotframe=np.add(tempinvrobotframe,invrobotframe)
+
+
+    #there is some error when the robot turns 
+    #when it comes to the inverse solving, 
+    #it falsely solves for some y component of 
+    #the robot frame being higher than zero 
+    #which is impossile. 
+
+    #this likely stems from the issues we had with the 
+    #under-reporting of the angles
+
+
+
+
+
+
+
+
+
+
+
+
+def IKanglevelosolver():
+
+    #old globals
+    global robotframe
+    global totalrobotframe
+    global totalIframe
+    global tempframe
+    global tmatrix
+    global theta
+    global tempIframe
+    global pose_x
+    global pose_y
+    global pose_theta  
+
+    #new globals
+    global invtmatrix
+    global invrobotframe
+    global tempinvrobotframe
+    global invangleveloframe
+    global temptheta
+
+
+    invtmatrix=np.array([[math.cos(temptheta), math.sin(temptheta), 0],
+                         [-math.sin(temptheta), math.cos(temptheta), 0],
+                         [0, 0, 1]])
+    
+
+    tempinvrobotframe=np.dot(invtmatrix,tempIframe)
+
+
+    xrvelo=tempinvrobotframe[0][0]
+    anglevelo=tempinvrobotframe[2][0]
+
+
+    rotvelosolver(xrvelo,anglevelo)
+
+
+
+
+
+
+def rotvelosolver(xrvelo,anglevelo):
+
+    global invangleveloframe
+
+    rotleft=((xrvelo-((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
+    rotright=((xrvelo+((anglevelo*EPUCK_AXLE_DIAMETER)/2)))/EPUCK_WHEEL_RADIUS
+
+    invangleveloframe= np.array([[rotleft],
+            [rotright]])
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -506,35 +721,6 @@ while robot.step(timestep) != -1:
     # Read ground sensor values
     for i, gs in enumerate(ground_sensors):
         gsr[i] = gs.getValue()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -651,19 +837,6 @@ while robot.step(timestep) != -1:
                 if(robotsubstate==SUBSTATES.Right_Sensor_detects_line):
                     leftSpeed  = MAX_SPEED*rotamt
                     rightSpeed = -MAX_SPEED*rotamt
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
