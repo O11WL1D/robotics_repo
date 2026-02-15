@@ -312,9 +312,6 @@ def report(option, message):
         phl = invangleveloframe[0][0]   # wl
         phr = invangleveloframe[1][0]   # wr
 
-        print("Recalculated u val " + str((phl + phr)*(R/2)))
-
-
         u_check = (phl + phr) * (R/2)
         w_check = (phr - phl) * (R/D)
 

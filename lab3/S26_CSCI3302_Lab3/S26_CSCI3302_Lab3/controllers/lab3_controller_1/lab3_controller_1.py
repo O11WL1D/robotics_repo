@@ -47,11 +47,13 @@ for i in range(10): robot.step(SIM_TIMESTEP)
 vL = 0
 vR = 0
 
+
 # Initialize gps and compass for odometry
 gps = robot.getDevice("gps")
 gps.enable(SIM_TIMESTEP)
 compass = robot.getDevice("compass")
 compass.enable(SIM_TIMESTEP)
+
 
 # TODO: Find waypoints to navigate around the arena while avoiding obstacles
 waypoints = []
