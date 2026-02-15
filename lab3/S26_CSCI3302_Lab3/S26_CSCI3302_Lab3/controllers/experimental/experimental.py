@@ -276,27 +276,27 @@ def report(option, message):
         print("CURRENT ROBOT STATE:  " + str(robotstate)+ "  CURRENT ROBOT SUBSTATE:    " + str(robotsubstate)) 
         
         print("GROUND SENSOR VALUES: " + str(gsr))
-        print("ELAPSED TIME: " + str(currenttime)) 
+        #print("ELAPSED TIME: " + str(currenttime)) 
         print("Left detection? : " + str(leftsensordetection) + " center detection? " + str(centersensordetection) + " right detection? " + str(rightsensordetection)) 
         print(message)
         
-        print(
-        f'Sim time: {robot.getTime():.3f}  Pose: x={x:.2f} m, y={y:.2f} m, phi={phi:.4f} rad.')
+        #print(
+        #f'Sim time: {robot.getTime():.3f}  Pose: x={x:.2f} m, y={y:.2f} m, phi={phi:.4f} rad.')
    
-        print("left_Wheel angle inf (rad):", diffleft)
-        print("right_Wheel angle inf (rad):", diffright)
+        #print("left_Wheel angle inf (rad):", diffleft)
+        #print("right_Wheel angle inf (rad):", diffright)
 
-        print("left_Wheel angle velo inf (rad):", infvelofrotleft)
-        print("right_Wheel angle velo inf (rad):", infvelofrotright)
+        #print("left_Wheel angle velo inf (rad):", infvelofrotleft)
+        #print("right_Wheel angle velo inf (rad):", infvelofrotright)
         print("Line detected?  " + str(linedetected))
         print("line detected count " + str(ldetectioncnt))
         print("temp Robot frame: \n", tempframe)
         print("total Robot frame: \n", totalrobotframe)
         print("total I frame: \n", totalIframe)
 
-        print(
-        f'Sim time: {robot.getTime():.3f}  Pose: x={x:.2f} m, y={y:.2f} m, phi={phi:.4f} rad.')
-        print("CURRENT U AND W VALUES: " + str(u) + " " + str(w))
+        #print(
+        #f'Sim time: {robot.getTime():.3f}  Pose: x={x:.2f} m, y={y:.2f} m, phi={phi:.4f} rad.')
+        #print("CURRENT U AND W VALUES: " + str(u) + " " + str(w))
 
         #print("Theta " + str(theta))
 
@@ -401,6 +401,7 @@ temptheta=0
 def update_matrix(u, w, x_old, y_old, phi_old, delta_t):
 
     global totalIframe
+    global tempIframe
 
     # --- 1. Compute new heading ---
     phi_new = phi_old + w * delta_t
@@ -452,6 +453,14 @@ def update_matrix(u, w, x_old, y_old, phi_old, delta_t):
     #print("theta val " + str(phi_old +  w * delta_t))
     
 
+
+    #solve inverse kinematics for phi left and phi right. 
+    rotvelosolver(u,w)
+
+    #verify inverse kinematics.
+
+
+
     # --- 5. Extract new pose ---
     x_new = T_new[0, 2]
     y_new = T_new[1, 2]
@@ -462,6 +471,7 @@ def update_matrix(u, w, x_old, y_old, phi_old, delta_t):
         [y_new],
         [phi_new]
     ])
+    tempIframe=totalIframe
 
     IKrobotsolver()
 
@@ -498,6 +508,7 @@ def IKrobotsolver():
                          [0, 0, 1]])
     
     tempinvrobotframe=np.dot(invtmatrix,totalIframe)
+    IKanglevelosolver()
 
 
 
@@ -562,7 +573,7 @@ def IKanglevelosolver():
     anglevelo=tempinvrobotframe[2][0]
 
 
-    rotvelosolver(xrvelo,anglevelo)
+    
 
 
 
@@ -575,11 +586,16 @@ def rotvelosolver(xrvelo,anglevelo):
 
     rotleft=((xrvelo-((anglevelo*D)/2)))/R
     rotright=((xrvelo+((anglevelo*D)/2)))/R
+    print("rot left" + str(rotleft))
+    print("rot right " +str(rotright))
 
-    invangleveloframe= np.array([[rotleft],
+    invangleveloframe=np.array([[rotleft],
             [rotright]])
     
-
+    phl=invangleveloframe[0][0]
+    phr=invangleveloframe[1][0]
+    
+    print("Recalculated u val " +str((phl+phr)*(R/2)))
 
 
 
@@ -733,7 +749,9 @@ while robot.step(timestep) != -1:
 
     [wl, wr] = get_wheels_speed(encoderValues, oldEncoderValues, 2 * math.pi, delta_t)
 
-    
+    phileft=(wl*D)/R
+    phiright=(wr*D)/R
+
     # update old encoder values for the next cycle
     oldEncoderValues = encoderValues
     # Compute robot linear and angular speeds
