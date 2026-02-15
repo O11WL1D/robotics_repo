@@ -309,6 +309,22 @@ def report(option, message):
 
         print("Temp angle velos" + str(invangleveloframe))
         
+        phl = invangleveloframe[0][0]   # wl
+        phr = invangleveloframe[1][0]   # wr
+
+        print("Recalculated u val " + str((phl + phr)*(R/2)))
+
+
+        u_check = (phl + phr) * (R/2)
+        w_check = (phr - phl) * (R/D)
+
+        print("Original u:", u)
+        print("Recomputed u:", u_check)
+
+        print("Original w:", w)
+        print("Recomputed w:", w_check)
+
+        
 
 
 
@@ -457,7 +473,10 @@ def update_matrix(u, w, x_old, y_old, phi_old, delta_t):
     #solve inverse kinematics for phi left and phi right. 
     rotvelosolver(u,w)
 
+
     #verify inverse kinematics.
+
+
 
 
 
@@ -592,11 +611,6 @@ def rotvelosolver(xrvelo,anglevelo):
     invangleveloframe=np.array([[rotleft],
             [rotright]])
     
-    phl=invangleveloframe[0][0]
-    phr=invangleveloframe[1][0]
-    
-    print("Recalculated u val " +str((phl+phr)*(R/2)))
-
 
 
 
